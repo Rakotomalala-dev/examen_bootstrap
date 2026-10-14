@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — EcoWorld</title>
+<meta name="description" content="Actualités, analyses et retours de terrain d'EcoWorld sur la reforestation, les océans, la biodiversité et le développement durable.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============================= NAVBAR ============================= -->
+<nav class="navbar navbar-expand-lg fixed-top navbar-eco on-dark">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <span class="brand-mark"><i class="bi bi-tree-fill"></i></span>EcoWorld
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Ouvrir le menu">
+      <i class="bi bi-list fs-1"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav mx-auto mt-3 mt-lg-0">
+        <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+        <li class="nav-item"><a class="nav-link" href="about.html">À propos</a></li>
+        <li class="nav-item"><a class="nav-link" href="projects.html">Nos projets</a></li>
+        <li class="nav-item"><a class="nav-link" href="gallery.html">Galerie</a></li>
+        <li class="nav-item"><a class="nav-link active" href="blog.html">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+      <a href="contact.html#formulaire" class="btn btn-amber mt-3 mt-lg-0">Agir maintenant</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================= EN-TÊTE ============================= -->
+<header class="page-header">
+  <div class="contour-layer" aria-hidden="true">
+    <svg viewBox="0 0 800 300" preserveAspectRatio="none"><path d="M0 220 Q200 150 400 210 T800 190" stroke="#7c8f3c" stroke-width="1" fill="none"/><path d="M0 250 Q200 190 400 240 T800 220" stroke="#a3b45f" stroke-width="1" fill="none"/></svg>
+  </div>
+  <div class="container position-relative">
+    <p class="breadcrumb-eco mb-3"><a href="index.html">Accueil</a> / Blog</p>
+    <p class="eyebrow mb-3">Le journal EcoWorld</p>
+    <h1 style="font-size:clamp(2.2rem,4vw,3.2rem);max-width:700px;">Analyses, récits de terrain et actualités environnementales</h1>
+  </div>
+</header>
+
+<!-- ============================= ARTICLE PRINCIPAL ============================= -->
+<section class="section pb-4">
+  <div class="container">
+    <article class="featured-article reveal">
+      <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80" alt="Forêt baignée de lumière">
+      <div class="content">
+        <span class="badge-eco mb-3 d-inline-block">À la une</span>
+        <h2 class="text-white mb-3" style="font-size:clamp(1.6rem,3vw,2.3rem);max-width:640px;">Ce que la reforestation de Madagascar nous apprend sur la résilience des sols</h2>
+        <p class="mb-4" style="color:rgba(255,255,255,0.85);max-width:560px;">Dix ans après le lancement de Forêt Vivante, les premiers relevés scientifiques confirment un retour spectaculaire de la biodiversité locale.</p>
+        <a href="#" class="btn btn-eco-outline" data-bs-toggle="modal" data-bs-target="#articleModal1">Lire l'article</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============================= RECHERCHE + CATÉGORIES + LISTE ============================= -->
+<section class="section pt-3">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- Barre latérale -->
+      <div class="col-lg-3">
+        <div class="mb-4 blog-search reveal">
+          <label for="blogSearch" class="form-label fw-bold small">Rechercher un article</label>
+          <input type="search" id="blogSearch" class="form-control" placeholder="Mots-clés…" aria-label="Rechercher un article de blog">
+        </div>
+        <div class="reveal reveal-delay-1">
+          <p class="fw-bold small mb-2">Catégories</p>
+          <div class="d-flex flex-column gap-2">
+            <button class="blog-category-btn active" data-blog-category="all">Tous les articles</button>
+            <button class="blog-category-btn" data-blog-category="reforestation">Reforestation</button>
+            <button class="blog-category-btn" data-blog-category="oceans">Océans</button>
+            <button class="blog-category-btn" data-blog-category="biodiversite">Biodiversité</button>
+            <button class="blog-category-btn" data-blog-category="energie">Énergie &amp; climat</button>
+            <button class="blog-category-btn" data-blog-category="education">Éducation</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Liste des articles -->
+      <div class="col-lg-9">
+        <div class="row g-4" id="blogList">
+
+          <div class="col-md-6 col-lg-4" data-blog-card data-title="La mangrove, rempart naturel contre l'érosion côtière" data-excerpt="Comment la replantation des mangroves protège les villages littoraux des tempêtes et de la montée des eaux." data-category="oceans">
+            <article class="blog-card reveal">
+              <div class="blog-media"><img src="https://images.unsplash.com/photo-1439405326854-014607f694d7?auto=format&fit=crop&w=700&q=80" alt="Mangrove côtière" loading="lazy"></div>
+              <div class="p-4">
+                <div class="blog-meta mb-2">Océans · 12 mars 2026</div>
+                <h3 class="h6 mb-2">La mangrove, rempart naturel contre l'érosion côtière</h3>
+                <p class="small text-body-secondary mb-3">Comment la replantation des mangroves protège les villages littoraux des tempêtes et de la montée des eaux.</p>
+                <a href="#" class="fw-bold text-forest small" data-bs-toggle="modal" data-bs-target="#articleModal2">Lire l'article <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-6 col-lg-4" data-blog-card data-title="Pourquoi replanter des espèces natives change tout" data-excerpt="Les erreurs classiques de la reforestation et les leçons tirées de dix ans de projets sur le terrain." data-category="reforestation">
+            <article class="blog-card reveal reveal-delay-1">
+              <div class="blog-media"><img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=700&q=80" alt="Jeunes pousses natives" loading="lazy"></div>
+              <div class="p-4">
+                <div class="blog-meta mb-2">Reforestation · 2 mars 2026</div>
+                <h3 class="h6 mb-2">Pourquoi replanter des espèces natives change tout</h3>
+                <p class="small text-body-secondary mb-3">Les erreurs classiques de la reforestation et les leçons tirées de dix ans de projets sur le terrain.</p>
+                <a href="#" class="fw-bold text-forest small" data-bs-toggle="modal" data-bs-target="#articleModal3">Lire l'article <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-6 col-lg-4" data-blog-card data-title="Corridors écologiques : reconnecter la faune sauvage" data-excerpt="Retour sur le projet Corridors Sauvages, un an après son lancement dans la vallée du Rift." data-category="biodiversite">
+            <article class="blog-card reveal reveal-delay-2">
+              <div class="blog-media"><img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?auto=format&fit=crop&w=700&q=80" alt="Éléphant en réserve naturelle" loading="lazy"></div>
+              <div class="p-4">
+                <div class="blog-meta mb-2">Biodiversité · 21 février 2026</div>
+                <h3 class="h6 mb-2">Corridors écologiques : reconnecter la faune sauvage</h3>
+                <p class="small text-body-secondary mb-3">Retour sur le projet Corridors Sauvages, un an après son lancement dans la vallée du Rift.</p>
+                <a href="#" class="fw-bold text-forest small" data-bs-toggle="modal" data-bs-target="#articleModal4">Lire l'article <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-6 col-lg-4" data-blog-card data-title="Le solaire hors réseau, une solution concrète pour les villages isolés" data-excerpt="Bilan technique et humain du programme Villages Solaires, deux ans après son démarrage." data-category="energie">
+            <article class="blog-card reveal">
+              <div class="blog-media"><img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=700&q=80" alt="Panneaux solaires en village" loading="lazy"></div>
+              <div class="p-4">
+                <div class="blog-meta mb-2">Énergie &amp; climat · 9 février 2026</div>
+                <h3 class="h6 mb-2">Le solaire hors réseau, une solution concrète</h3>
+                <p class="small text-body-secondary mb-3">Bilan technique et humain du programme Villages Solaires, deux ans après son démarrage.</p>
+                <a href="#" class="fw-bold text-forest small" data-bs-toggle="modal" data-bs-target="#articleModal5">Lire l'article <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-6 col-lg-4" data-blog-card data-title="Enseigner l'écologie dès le plus jeune âge" data-excerpt="Comment le programme Écoles Vertes transforme le rapport des enfants à leur environnement." data-category="education">
+            <article class="blog-card reveal reveal-delay-1">
+              <div class="blog-media"><img src="https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&w=700&q=80" alt="Enfants plantant un arbre" loading="lazy"></div>
+              <div class="p-4">
+                <div class="blog-meta mb-2">Éducation · 28 janvier 2026</div>
+                <h3 class="h6 mb-2">Enseigner l'écologie dès le plus jeune âge</h3>
+                <p class="small text-body-secondary mb-3">Comment le programme Écoles Vertes transforme le rapport des enfants à leur environnement.</p>
+                <a href="#" class="fw-bold text-forest small" data-bs-toggle="modal" data-bs-target="#articleModal6">Lire l'article <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-6 col-lg-4" data-blog-card data-title="Coraux : la restauration active fonctionne-t-elle vraiment ?" data-excerpt="Les données scientifiques recueillies à Palawan après cinq ans de restauration corallienne." data-category="oceans">
+            <article class="blog-card reveal reveal-delay-2">
+              <div class="blog-media"><img src="https://images.unsplash.com/photo-1546026423-cc4642628d2b?auto=format&fit=crop&w=700&q=80" alt="Récif corallien" loading="lazy"></div>
+              <div class="p-4">
+                <div class="blog-meta mb-2">Océans · 15 janvier 2026</div>
+                <h3 class="h6 mb-2">Coraux : la restauration active fonctionne-t-elle ?</h3>
+                <p class="small text-body-secondary mb-3">Les données scientifiques recueillies à Palawan après cinq ans de restauration corallienne.</p>
+                <a href="#" class="fw-bold text-forest small" data-bs-toggle="modal" data-bs-target="#articleModal7">Lire l'article <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </article>
+          </div>
+
+        </div>
+
+        <p id="blogNoResults" class="text-center text-body-secondary py-5" style="display:none;">Aucun article ne correspond à votre recherche.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modales d'articles (lecture sans backend) -->
+<div class="modal fade" id="articleModal1" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content rounded-eco border-0">
+  <div class="modal-header border-0"><h2 class="modal-title h5">Ce que la reforestation de Madagascar nous apprend</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+  <div class="modal-body"><p>Dix ans après le lancement de Forêt Vivante, les relevés menés avec nos partenaires scientifiques montrent un retour significatif des espèces d'oiseaux et d'insectes pollinisateurs sur les parcelles restaurées. Les sols, autrefois compactés par l'agriculture sur brûlis, retiennent désormais nettement plus d'eau en saison sèche.</p><p>Ces résultats confirment l'intérêt d'une reforestation menée avec des essences natives, plutôt qu'avec des monocultures à croissance rapide.</p></div>
+</div></div></div>
+
+<div class="modal fade" id="articleModal2" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content rounded-eco border-0">
+  <div class="modal-header border-0"><h2 class="modal-title h5">La mangrove, rempart naturel contre l'érosion côtière</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+  <div class="modal-body"><p>Les racines enchevêtrées de la mangrove ralentissent la houle et stabilisent les sédiments côtiers. Dans les villages où EcoWorld a accompagné leur replantation, les dégâts constatés lors des dernières tempêtes tropicales ont nettement diminué par rapport aux zones voisines dépourvues de couvert végétal.</p></div>
+</div></div></div>
+
+<div class="modal fade" id="articleModal3" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content rounded-eco border-0">
+  <div class="modal-header border-0"><h2 class="modal-title h5">Pourquoi replanter des espèces natives change tout</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+  <div class="modal-body"><p>Planter vite n'est pas toujours planter juste. Les espèces natives, mieux adaptées au climat et aux sols locaux, offrent un habitat plus riche à la faune et résistent mieux aux maladies. Ce constat guide désormais le choix des essences dans tous les projets de reforestation d'EcoWorld.</p></div>
+</div></div></div>
+
+<div class="modal fade" id="articleModal4" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content rounded-eco border-0">
+  <div class="modal-header border-0"><h2 class="modal-title h5">Corridors écologiques : reconnecter la faune sauvage</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+  <div class="modal-body"><p>Un an après le lancement du projet Corridors Sauvages, près de 40% du tracé prévu est désormais sécurisé par des accords avec les communautés riveraines. Les premières caméras de suivi confirment le passage régulier de plusieurs espèces auparavant isolées par la fragmentation des habitats.</p></div>
+</div></div></div>
+
+<div class="modal fade" id="articleModal5" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content rounded-eco border-0">
+  <div class="modal-header border-0"><h2 class="modal-title h5">Le solaire hors réseau, une solution concrète</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+  <div class="modal-body"><p>Deux ans après le début du programme Villages Solaires, 88% des foyers ciblés disposent désormais d'un accès fiable à l'électricité. Les coopératives agricoles partenaires signalent une meilleure conservation des récoltes grâce à la réfrigération solaire.</p></div>
+</div></div></div>
+
+<div class="modal fade" id="articleModal6" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content rounded-eco border-0">
+  <div class="modal-header border-0"><h2 class="modal-title h5">Enseigner l'écologie dès le plus jeune âge</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+  <div class="modal-body"><p>Le programme Écoles Vertes combine ateliers pratiques, jardins pédagogiques et sorties de terrain. Les enseignants partenaires observent un engagement croissant des élèves dans les initiatives de tri et de plantation au sein même de leur établissement.</p></div>
+</div></div></div>
+
+<div class="modal fade" id="articleModal7" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content rounded-eco border-0">
+  <div class="modal-header border-0"><h2 class="modal-title h5">Coraux : la restauration active fonctionne-t-elle ?</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+  <div class="modal-body"><p>Cinq ans de suivi scientifique sur les récifs de Palawan montrent une reprise progressive de la biomasse corallienne sur les zones de bouturage, avec un retour visible de la diversité des poissons récifaux associés.</p></div>
+</div></div></div>
+
+<!-- ============================= NEWSLETTER ============================= -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="cta-band reveal">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <p class="eyebrow mb-3" style="color:var(--forest-400);">Ne manquez aucun article</p>
+          <h2 class="text-white mb-0" style="font-size:clamp(1.6rem,3vw,2.2rem);">Recevez nos publications directement par email</h2>
+        </div>
+        <div class="col-lg-5">
+          <form class="d-flex newsletter-input-group" data-newsletter-form novalidate>
+            <input type="email" class="form-control" placeholder="Votre adresse email" required aria-label="Adresse email pour la newsletter">
+            <button class="btn btn-amber" type="submit">S'inscrire</button>
+          </form>
+          <div class="small mt-2" style="color:var(--sand-100);" data-newsletter-feedback></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= FOOTER ============================= -->
+<footer class="footer-eco">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <a class="navbar-brand text-white mb-3 d-inline-flex" href="index.html">
+          <span class="brand-mark me-2"><i class="bi bi-tree-fill"></i></span>EcoWorld
+        </a>
+        <p class="small mb-4">Organisation dédiée à la protection de l'environnement, à la reforestation et à la sensibilisation depuis 2011.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="X / Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Navigation</h6>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="about.html">À propos</a></li>
+          <li><a href="projects.html">Nos projets</a></li>
+          <li><a href="gallery.html">Galerie</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Coordonnées</h6>
+        <ul>
+          <li><i class="bi bi-geo-alt me-2"></i>Antananarivo, Madagascar</li>
+          <li><i class="bi bi-envelope me-2"></i>contact@ecoworld.org</li>
+          <li><i class="bi bi-telephone me-2"></i>+261 20 22 000 00</li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h6>Newsletter</h6>
+        <p class="small">Recevez nos actualités et le suivi de nos projets, une fois par mois.</p>
+        <form class="d-flex newsletter-input-group" data-newsletter-form novalidate>
+          <input type="email" class="form-control" placeholder="Votre adresse email" required aria-label="Adresse email pour la newsletter">
+          <button class="btn btn-amber" type="submit">OK</button>
+        </form>
+        <div class="small mt-2" data-newsletter-feedback></div>
+      </div>
+    </div>
+    <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <span>© <span data-current-year></span> EcoWorld — Tous droits réservés.</span>
+      <span>Site frontend de démonstration — aucune donnée n'est transmise à un serveur.</span>
+    </div>
+  </div>
+</footer>
+
+<button id="backToTop" class="back-to-top" aria-label="Retour en haut de page"><i class="bi bi-arrow-up"></i></button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

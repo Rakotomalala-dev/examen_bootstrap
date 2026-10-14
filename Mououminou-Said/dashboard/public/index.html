@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="fr" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Analytics Temps Réel</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bs-body-bg);
+      border: 1px solid var(--bs-border-color);
+      border-radius: 0.5rem;
+      max-height: 350px;
+      overflow-y: auto;
+      z-index: 1050;
+      margin-top: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .search-results .list-group-item {
+      cursor: pointer;
+      border: none;
+      border-bottom: 1px solid var(--bs-border-color);
+      transition: background 0.15s;
+    }
+    .search-results .list-group-item:last-child { border-bottom: none; }
+    .search-results .list-group-item:hover { background: var(--bs-tertiary-bg); }
+
+    /* Mini-carte monde */
+    .world-map {
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, #0d1b2a, #1b263b);
+      border-radius: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .world-map .dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0d6efd;
+      box-shadow: 0 0 12px #0d6efd;
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.6); opacity: 0.6; }
+    }
+
+    /* Barres pays */
+    .country-bar {
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(90deg, var(--bs-primary), var(--bs-info));
+      transition: width 0.8s ease;
+    }
+
+    /* Sidebar badge "Nouveau" */
+    .nav-link .badge-new {
+      font-size: 0.6rem;
+      padding: 2px 6px;
+    }
+
+    /* Impression PDF */
+    @media print {
+      .navbar, .sidebar, .btn, .toast-container, .dropdown { display: none !important; }
+      main { width: 100% !important; max-width: 100% !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ NAVBAR ============ -->
+  <nav class="navbar navbar-expand-lg sticky-top border-bottom navbar-glass px-3">
+    <div class="container-fluid">
+      <button class="btn btn-sm btn-outline-secondary d-lg-none me-2" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#" onclick="showPage('dashboard'); return false;">
+        <i class="bi bi-graph-up-arrow text-primary fs-4"></i>
+        <span>Live<span class="text-primary">Analytics</span></span>
+      </a>
+
+      <div class="ms-auto d-flex align-items-center gap-2 gap-md-3">
+        <!-- SEARCH -->
+        <div class="position-relative d-none d-md-block" style="width: 280px;">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text bg-body-tertiary border-0">
+              <i class="bi bi-search"></i>
+            </span>
+            <input type="text" class="form-control bg-body-tertiary border-0"
+                   placeholder="Rechercher... (Ctrl+K)" id="globalSearch" autocomplete="off" />
+          </div>
+          <div id="searchResults" class="search-results d-none"></div>
+        </div>
+
+        <button class="btn btn-sm btn-outline-secondary" id="themeToggle" title="Changer de thème">
+          <i class="bi bi-moon-stars"></i>
+        </button>
+
+        <button class="btn btn-sm btn-outline-secondary" id="printBtn" title="Imprimer / PDF">
+          <i class="bi bi-printer"></i>
+        </button>
+
+        <!-- NOTIFICATIONS -->
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary position-relative" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notifBadge">0</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow" id="notifList" style="width: 340px; max-height: 400px; overflow-y: auto;">
+            <li class="dropdown-header d-flex justify-content-between align-items-center">
+              <span>Notifications</span>
+              <button class="btn btn-sm btn-link text-decoration-none p-0" onclick="clearNotifications()">Tout effacer</button>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li class="text-muted text-center py-3 small" id="notifEmpty">Aucune notification</li>
+          </ul>
+        </div>
+
+        <!-- PROFIL -->
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center text-decoration-none" data-bs-toggle="dropdown">
+            <img src="https://i.pravatar.cc/40?img=12" class="rounded-circle" width="36" height="36" alt="avatar" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow">
+            <li><a class="dropdown-item" href="#" onclick="showPage('parametres'); return false;">
+              <i class="bi bi-person me-2"></i>Mon profil</a></li>
+            <li><a class="dropdown-item" href="#" onclick="showPage('parametres'); return false;">
+              <i class="bi bi-gear me-2"></i>Paramètres</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" onclick="logout(); return false;">
+              <i class="bi bi-box-arrow-right me-2"></i>Déconnexion</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- ============ SIDEBAR DESKTOP ============ -->
+      <aside class="col-lg-2 d-none d-lg-block sidebar p-3 vh-100 position-sticky top-0" style="overflow-y: auto;">
+        <ul class="nav flex-column gap-1" id="sidebarNav">
+          <li class="nav-item"><a class="nav-link active" href="#" data-page="dashboard">
+            <i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="analytics">
+            <i class="bi bi-bar-chart-line me-2"></i>Analytics</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="utilisateurs">
+            <i class="bi bi-people me-2"></i>Utilisateurs</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="commandes">
+            <i class="bi bi-cart me-2"></i>Commandes</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="rapports">
+            <i class="bi bi-file-earmark-text me-2"></i>Rapports</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="parametres">
+            <i class="bi bi-gear me-2"></i>Paramètres</a></li>
+        </ul>
+
+        <div class="mt-4 p-3 rounded-3 bg-primary-subtle">
+          <h6 class="fw-bold mb-1"><i class="bi bi-stars me-1"></i>Passer Pro</h6>
+          <p class="small text-muted mb-2">Débloquez les rapports avancés.</p>
+          <button class="btn btn-primary btn-sm w-100" onclick="upgradePro()">Upgrade</button>
+        </div>
+
+        <!-- Widget "Statut serveur" -->
+        <div class="mt-3 p-3 rounded-3 bg-body-tertiary">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="spinner-grow spinner-grow-sm text-success" style="width: 8px; height: 8px;"></span>
+            <small class="fw-bold">Serveur</small>
+          </div>
+          <small class="text-muted d-block">Latence : <span id="serverLatency">-- ms</span></small>
+          <small class="text-muted d-block">Uptime : <span id="serverUptime">--:--</span></small>
+        </div>
+      </aside>
+
+      <!-- ============ SIDEBAR MOBILE ============ -->
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMobile">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="nav flex-column gap-1" id="sidebarNavMobile">
+            <li><a class="nav-link active" href="#" data-page="dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+            <li><a class="nav-link" href="#" data-page="analytics"><i class="bi bi-bar-chart-line me-2"></i>Analytics</a></li>
+            <li><a class="nav-link" href="#" data-page="utilisateurs"><i class="bi bi-people me-2"></i>Utilisateurs</a></li>
+            <li><a class="nav-link" href="#" data-page="commandes"><i class="bi bi-cart me-2"></i>Commandes</a></li>
+            <li><a class="nav-link" href="#" data-page="rapports"><i class="bi bi-file-earmark-text me-2"></i>Rapports</a></li>
+            <li><a class="nav-link" href="#" data-page="parametres"><i class="bi bi-gear me-2"></i>Paramètres</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ============ CONTENU PRINCIPAL ============ -->
+      <main class="col-lg-10 py-4 px-3 px-lg-4">
+
+        <!-- ========== PAGE : DASHBOARD ========== -->
+        <section class="page active" id="page-dashboard">
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+            <div>
+              <h1 class="h4 fw-bold mb-0">Vue d'ensemble</h1>
+              <p class="text-muted small mb-0">
+                <i class="bi bi-broadcast text-success"></i>
+                Données en direct · <span id="lastUpdate">--:--:--</span>
+              </p>
+            </div>
+            <div class="btn-group btn-group-sm" role="group" id="periodFilter">
+              <button type="button" class="btn btn-outline-secondary" data-period="1h">1h</button>
+              <button type="button" class="btn btn-outline-secondary active" data-period="24h">24h</button>
+              <button type="button" class="btn btn-outline-secondary" data-period="7j">7j</button>
+              <button type="button" class="btn btn-outline-secondary" data-period="30j">30j</button>
+            </div>
+          </div>
+
+          <!-- KPI CARDS -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6 col-xl-3">
+              <div class="card kpi-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-icon bg-primary-subtle text-primary"><i class="bi bi-people"></i></div>
+                    <span class="badge bg-success-subtle text-success">
+                      <span class="spinner-grow spinner-grow-sm me-1"></span>Live
+                    </span>
+                  </div>
+                  <p class="text-muted small mb-1">Visiteurs en ligne</p>
+                  <h3 class="fw-bold mb-1 counter" id="kpiVisitors">0</h3>
+                  <small class="text-success"><i class="bi bi-arrow-up"></i> <span id="visitorsTrend">12</span>% vs hier</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+              <div class="card kpi-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-icon bg-success-subtle text-success"><i class="bi bi-cash-coin"></i></div>
+                    <span class="badge bg-success-subtle text-success" id="revenueTrend">+8.3%</span>
+                  </div>
+                  <p class="text-muted small mb-1">Revenus du jour</p>
+                  <h3 class="fw-bold mb-1"><span id="kpiRevenue">0</span> €</h3>
+                  <small class="text-success"><i class="bi bi-arrow-up"></i> Objectif 80%</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+              <div class="card kpi-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-icon bg-warning-subtle text-warning"><i class="bi bi-cart-check"></i></div>
+                    <span class="badge bg-warning-subtle text-warning">Nouveau</span>
+                  </div>
+                  <p class="text-muted small mb-1">Commandes</p>
+                  <h3 class="fw-bold mb-1 counter" id="kpiOrders">0</h3>
+                  <small class="text-muted">Aujourd'hui</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+              <div class="card kpi-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-icon bg-danger-subtle text-danger"><i class="bi bi-percent"></i></div>
+                    <span class="badge bg-danger-subtle text-danger">-0.4%</span>
+                  </div>
+                  <p class="text-muted small mb-1">Taux de conversion</p>
+                  <h3 class="fw-bold mb-1"><span id="kpiConversion">0</span> %</h3>
+                  <small class="text-muted">Moyenne 3.1%</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRAPHIQUES -->
+          <div class="row g-3 mb-4">
+            <div class="col-xl-8">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                  <h6 class="fw-bold mb-0"><i class="bi bi-activity text-primary me-2"></i>Visiteurs en temps réel</h6>
+                  <span class="badge bg-primary-subtle text-primary">Live</span>
+                </div>
+                <div class="card-body">
+                  <canvas id="realtimeChart" height="110"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0">
+                  <h6 class="fw-bold mb-0"><i class="bi bi-pie-chart text-success me-2"></i>Sources de trafic</h6>
+                </div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                  <canvas id="trafficChart" height="220"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TABLEAU + ÉVÉNEMENTS -->
+          <div class="row g-3 mb-4">
+            <div class="col-xl-7">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                  <h6 class="fw-bold mb-0"><i class="bi bi-table text-info me-2"></i>Dernières transactions</h6>
+                  <button class="btn btn-sm btn-outline-secondary" onclick="exportTransactions()">
+                    <i class="bi bi-download me-1"></i>Export CSV
+                  </button>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th>Client</th><th>Pays</th><th>Montant</th><th>Statut</th><th>Heure</th>
+                        </tr>
+                      </thead>
+                      <tbody id="transactionsTable"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-5">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                  <h6 class="fw-bold mb-0"><i class="bi bi-broadcast text-danger me-2"></i>Activité live</h6>
+                  <span class="badge bg-danger-subtle text-danger">
+                    <span class="spinner-grow spinner-grow-sm me-1"></span>En direct
+                  </span>
+                </div>
+                <div class="card-body p-0">
+                  <ul class="list-group list-group-flush" id="eventsList" style="max-height: 380px; overflow-y:auto;"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- APPAREILS + CARTE MONDE + TOP PAYS -->
+          <div class="row g-3 mb-4">
+            <!-- APPAREILS -->
+            <div class="col-xl-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                  <h6 class="fw-bold mb-0"><i class="bi bi-phone text-info me-2"></i>Appareils utilisés</h6>
+                  <span class="badge bg-info-subtle text-info">Live</span>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1 small">
+                      <span><i class="bi bi-phone me-1 text-primary"></i>Mobile</span>
+                      <span class="fw-bold" id="deviceMobilePct">62%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-primary" id="deviceMobileBar" style="width: 62%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1 small">
+                      <span><i class="bi bi-laptop me-1 text-success"></i>Desktop</span>
+                      <span class="fw-bold" id="deviceDesktopPct">31%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-success" id="deviceDesktopBar" style="width: 31%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1 small">
+                      <span><i class="bi bi-tablet me-1 text-warning"></i>Tablette</span>
+                      <span class="fw-bold" id="deviceTabletPct">7%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-warning" id="deviceTabletBar" style="width: 7%"></div>
+                    </div>
+                  </div>
+
+                  <hr class="my-3" />
+
+                  <div class="small text-muted mb-2">Navigateurs</div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-primary-subtle text-primary"><i class="bi bi-chrome me-1"></i>Chrome 45%</span>
+                    <span class="badge bg-danger-subtle text-danger"><i class="bi bi-firefox me-1"></i>Firefox 28%</span>
+                    <span class="badge bg-info-subtle text-info"><i class="bi bi-safari me-1"></i>Safari 18%</span>
+                    <span class="badge bg-success-subtle text-success"><i class="bi bi-edge me-1"></i>Edge 9%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARTE MONDE -->
+            <div class="col-xl-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                  <h6 class="fw-bold mb-0"><i class="bi bi-globe-americas text-primary me-2"></i>Visiteurs dans le monde</h6>
+                  <span class="badge bg-primary-subtle text-primary" id="worldVisitorCount">0</span>
+                </div>
+                <div class="card-body">
+                  <div class="world-map" id="worldMap">
+                    <!-- Points générés dynamiquement -->
+                  </div>
+                  <small class="text-muted d-block mt-2 text-center">
+                    <i class="bi bi-geo-alt"></i> <span id="worldActiveCities">0</span> villes actives
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- TOP PAYS -->
+            <div class="col-xl-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0">
+                  <h6 class="fw-bold mb-0"><i class="bi bi-globe2 text-warning me-2"></i>Top pays</h6>
+                </div>
+                <div class="card-body" id="countriesList"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== PAGE : ANALYTICS ========== -->
+        <section class="page" id="page-analytics">
+          <h1 class="h4 fw-bold mb-4"><i class="bi bi-bar-chart-line text-primary me-2"></i>Analytics</h1>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <p class="text-muted small mb-1">Pages vues</p>
+                  <h3 class="fw-bold mb-0">124,531</h3>
+                  <small class="text-success"><i class="bi bi-arrow-up"></i> 15.2%</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <p class="text-muted small mb-1">Durée moyenne</p>
+                  <h3 class="fw-bold mb-0">4m 32s</h3>
+                  <small class="text-success"><i class="bi bi-arrow-up"></i> 8%</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <p class="text-muted small mb-1">Taux de rebond</p>
+                  <h3 class="fw-bold mb-0">32.4%</h3>
+                  <small class="text-danger"><i class="bi bi-arrow-down"></i> 2.1%</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-lg-8">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                  <h6 class="fw-bold mb-0">Trafic par source</h6>
+                </div>
+                <div class="card-body">
+                  <canvas id="analyticsChart" height="100"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                  <h6 class="fw-bold mb-0">Appareils</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1 small">
+                      <span><i class="bi bi-phone me-1"></i>Mobile</span><span>62%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                      <div class="progress-bar bg-primary" style="width: 62%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1 small">
+                      <span><i class="bi bi-laptop me-1"></i>Desktop</span><span>31%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                      <div class="progress-bar bg-success" style="width: 31%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1 small">
+                      <span><i class="bi bi-tablet me-1"></i>Tablette</span><span>7%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                      <div class="progress-bar bg-warning" style="width: 7%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                  <h6 class="fw-bold mb-0">Top 5 pages les plus visitées</h6>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                      <thead>
+                        <tr><th>#</th><th>Page</th><th>Vues</th><th>Temps moyen</th><th>Rebond</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr><td>1</td><td>/accueil</td><td>42,180</td><td>3m 12s</td><td class="text-success">22%</td></tr>
+                        <tr><td>2</td><td>/produits</td><td>28,415</td><td>5m 45s</td><td class="text-warning">35%</td></tr>
+                        <tr><td>3</td><td>/tarifs</td><td>19,876</td><td>2m 08s</td><td class="text-danger">48%</td></tr>
+                        <tr><td>4</td><td>/blog</td><td>15,320</td><td>7m 22s</td><td class="text-success">18%</td></tr>
+                        <tr><td>5</td><td>/contact</td><td>9,742</td><td>1m 45s</td><td class="text-danger">62%</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== PAGE : UTILISATEURS ========== -->
+        <section class="page" id="page-utilisateurs">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h4 fw-bold mb-0"><i class="bi bi-people text-primary me-2"></i>Utilisateurs</h1>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#userModal" onclick="openUserModal()">
+              <i class="bi bi-plus-lg me-1"></i>Ajouter
+            </button>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-3">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <p class="text-muted small mb-1">Total</p>
+                  <h3 class="fw-bold mb-0" id="usersCount">0</h3>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <p class="text-muted small mb-1">Actifs</p>
+                  <h3 class="fw-bold mb-0 text-success" id="usersActive">0</h3>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <p class="text-muted small mb-1">Inactifs</p>
+                  <h3 class="fw-bold mb-0 text-warning" id="usersInactive">0</h3>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <p class="text-muted small mb-1">Admins</p>
+                  <h3 class="fw-bold mb-0 text-primary" id="usersAdmins">0</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Avatar</th><th>Nom</th><th>Email</th><th>Rôle</th><th>Statut</th><th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="usersTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== PAGE : COMMANDES ========== -->
+        <section class="page" id="page-commandes">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h4 fw-bold mb-0"><i class="bi bi-cart text-primary me-2"></i>Commandes</h1>
+            <button class="btn btn-outline-secondary btn-sm" onclick="exportOrders()">
+              <i class="bi bi-download me-1"></i>Exporter
+            </button>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-3">
+              <div class="card border-0 shadow-sm"><div class="card-body">
+                <p class="text-muted small mb-1">Total</p>
+                <h3 class="fw-bold mb-0">1,284</h3>
+              </div></div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 shadow-sm"><div class="card-body">
+                <p class="text-muted small mb-1">En attente</p>
+                <h3 class="fw-bold mb-0 text-warning">32</h3>
+              </div></div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 shadow-sm"><div class="card-body">
+                <p class="text-muted small mb-1">Livrées</p>
+                <h3 class="fw-bold mb-0 text-success">1,189</h3>
+              </div></div>
+            </div>
+            <div class="col-md-3">
+              <div class="card border-0 shadow-sm"><div class="card-body">
+                <p class="text-muted small mb-1">Annulées</p>
+                <h3 class="fw-bold mb-0 text-danger">63</h3>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr><th>#ID</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>#CMD-1042</td><td>Alice Martin</td><td>07/10/2025</td><td class="fw-bold">124,50 €</td><td><span class="badge bg-success-subtle text-success">Livrée</span></td></tr>
+                    <tr><td>#CMD-1041</td><td>Karim Ben</td><td>07/10/2025</td><td class="fw-bold">89,90 €</td><td><span class="badge bg-warning-subtle text-warning">En attente</span></td></tr>
+                    <tr><td>#CMD-1040</td><td>Yuki Tanaka</td><td>06/10/2025</td><td class="fw-bold">312,00 €</td><td><span class="badge bg-success-subtle text-success">Livrée</span></td></tr>
+                    <tr><td>#CMD-1039</td><td>Lucas Silva</td><td>06/10/2025</td><td class="fw-bold">45,00 €</td><td><span class="badge bg-danger-subtle text-danger">Annulée</span></td></tr>
+                    <tr><td>#CMD-1038</td><td>Sofia Rossi</td><td>05/10/2025</td><td class="fw-bold">210,75 €</td><td><span class="badge bg-success-subtle text-success">Livrée</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== PAGE : RAPPORTS ========== -->
+        <section class="page" id="page-rapports">
+          <h1 class="h4 fw-bold mb-4"><i class="bi bi-file-earmark-text text-primary me-2"></i>Rapports</h1>
+
+          <div class="row g-3">
+            <div class="col-md-6 col-xl-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                  <div class="kpi-icon bg-primary-subtle text-primary mx-auto mb-3">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                  </div>
+                  <h6 class="fw-bold">Rapport mensuel</h6>
+                  <p class="text-muted small">Octobre 2025 · PDF</p>
+                  <button class="btn btn-primary btn-sm w-100" onclick="downloadReport('Rapport mensuel Octobre 2025', 'pdf')">
+                    <i class="bi bi-download me-1"></i>Télécharger
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xl-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                  <div class="kpi-icon bg-success-subtle text-success mx-auto mb-3">
+                    <i class="bi bi-file-earmark-excel"></i>
+                  </div>
+                  <h6 class="fw-bold">Ventes Q3</h6>
+                  <p class="text-muted small">Juillet - Septembre · Excel</p>
+                  <button class="btn btn-success btn-sm w-100" onclick="downloadReport('Ventes Q3 2025', 'csv')">
+                    <i class="bi bi-download me-1"></i>Télécharger
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xl-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                  <div class="kpi-icon bg-warning-subtle text-warning mx-auto mb-3">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                  </div>
+                  <h6 class="fw-bold">Analytics annuel</h6>
+                  <p class="text-muted small">2025 · PDF</p>
+                  <button class="btn btn-warning btn-sm w-100" onclick="downloadReport('Analytics annuel 2025', 'pdf')">
+                    <i class="bi bi-download me-1"></i>Télécharger
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== PAGE : PARAMÈTRES ========== -->
+        <section class="page" id="page-parametres">
+          <h1 class="h4 fw-bold mb-4"><i class="bi bi-gear text-primary me-2"></i>Paramètres</h1>
+
+          <div class="row g-3">
+            <div class="col-lg-8">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                  <h6 class="fw-bold mb-0">Préférences générales</h6>
+                </div>
+                <div class="card-body">
+                  <form id="settingsForm" onsubmit="saveSettings(event)">
+                    <div class="mb-3">
+                      <label class="form-label">Nom du compte</label>
+                      <input type="text" class="form-control" id="setName" value="LiveAnalytics" />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" class="form-control" id="setEmail" value="contact@liveanalytics.io" />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Langue</label>
+                      <select class="form-select" id="setLang">
+                        <option>Français</option><option>English</option><option>Español</option>
+                      </select>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                      <input class="form-check-input" type="checkbox" id="setNotif" checked>
+                      <label class="form-check-label" for="setNotif">Recevoir les notifications par email</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                      <input class="form-check-input" type="checkbox" id="setPush">
+                      <label class="form-check-label" for="setPush">Activer les notifications navigateur (push)</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit">
+                      <i class="bi bi-check-lg me-1"></i>Enregistrer
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                  <h6 class="fw-bold mb-0">Abonnement</h6>
+                </div>
+                <div class="card-body">
+                  <span class="badge bg-primary-subtle text-primary mb-2">Plan Pro</span>
+                  <h4 class="fw-bold">29 €<small class="text-muted fs-6">/mois</small></h4>
+                  <p class="text-muted small">Prochaine facturation : 07/11/2025</p>
+                  <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="manageSubscription()">Gérer</button>
+                  <button class="btn btn-outline-danger btn-sm w-100" onclick="cancelSubscription()">Annuler</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="text-center text-muted small mt-5 mb-3">
+          © 2025 LiveAnalytics · Fait avec Bootstrap 5 &amp; Socket.IO
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ MODAL UTILISATEUR ============ -->
+  <div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="userModalTitle">Ajouter un utilisateur</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="userForm" onsubmit="saveUser(event)">
+          <div class="modal-body">
+            <input type="hidden" id="userId" />
+            <div class="mb-3">
+              <label class="form-label">Nom complet *</label>
+              <input type="text" class="form-control" id="userName" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email *</label>
+              <input type="email" class="form-control" id="userEmail" required />
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Rôle</label>
+                <select class="form-select" id="userRole">
+                  <option value="Admin">Admin</option>
+                  <option value="Éditeur" selected>Éditeur</option>
+                  <option value="Lecteur">Lecteur</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Statut</label>
+                <select class="form-select" id="userStatus">
+                  <option value="Actif" selected>Actif</option>
+                  <option value="Inactif">Inactif</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg me-1"></i>Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@2.0.0/dist/chartjs-plugin-streaming.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/socket.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- ============ SCRIPT PRINCIPAL ============ -->
+  <script>
+    // ============ DONNÉES GLOBALES ============
+    let USERS = [
+      { id: 1, name: 'Alice Martin', email: 'alice@mail.com', role: 'Admin', status: 'Actif', avatar: 1 },
+      { id: 2, name: 'Karim Ben', email: 'karim@mail.com', role: 'Éditeur', status: 'Actif', avatar: 2 },
+      { id: 3, name: 'Yuki Tanaka', email: 'yuki@mail.com', role: 'Lecteur', status: 'Inactif', avatar: 3 },
+      { id: 4, name: 'Lucas Silva', email: 'lucas@mail.com', role: 'Éditeur', status: 'Actif', avatar: 4 },
+      { id: 5, name: 'Sofia Rossi', email: 'sofia@mail.com', role: 'Admin', status: 'Actif', avatar: 5 }
+    ];
+
+    let NOTIFICATIONS = [];
+    let currentUserEditId = null;
+
+    // ============ NAVIGATION SPA ============
+    function showPage(pageName) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('page-' + pageName);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('#sidebarNav .nav-link, #sidebarNavMobile .nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.dataset.page === pageName) link.classList.add('active');
+      });
+
+      const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('sidebarMobile'));
+      if (offcanvas) offcanvas.hide();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (pageName === 'utilisateurs') renderUsers();
+    }
+
+    document.querySelectorAll('[data-page]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPage(link.dataset.page);
+      });
+    });
+
+    // ============ TOAST ============
+    function showToast({ type = 'info', title, message, duration = 4000 }) {
+      const icons = {
+        success: 'check-circle-fill text-success',
+        danger: 'x-circle-fill text-danger',
+        warning: 'exclamation-triangle-fill text-warning',
+        info: 'info-circle-fill text-info'
+      };
+      const container = document.getElementById('toastContainer');
+      const toastEl = document.createElement('div');
+      toastEl.className = 'toast align-items-center border-0 shadow';
+      toastEl.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body d-flex align-items-center gap-2">
+            <i class="bi bi-${icons[type] || icons.info} fs-5"></i>
+            <div>
+              <strong class="d-block">${title}</strong>
+              <small class="text-muted">${message}</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      `;
+      container.appendChild(toastEl);
+      const toast = new bootstrap.Toast(toastEl, { delay: duration });
+      toast.show();
+      toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+    }
+
+    // ============ RECHERCHE ============
+    const searchInput = document.getElementById('globalSearch');
+    const searchResults = document.getElementById('searchResults');
+
+    const searchableItems = [
+      { label: 'Dashboard', page: 'dashboard', icon: 'speedometer2', cat: 'Page' },
+      { label: 'Analytics', page: 'analytics', icon: 'bar-chart-line', cat: 'Page' },
+      { label: 'Utilisateurs', page: 'utilisateurs', icon: 'people', cat: 'Page' },
+      { label: 'Commandes', page: 'commandes', icon: 'cart', cat: 'Page' },
+      { label: 'Rapports', page: 'rapports', icon: 'file-earmark-text', cat: 'Page' },
+      { label: 'Paramètres', page: 'parametres', icon: 'gear', cat: 'Page' },
+      { label: 'Export CSV transactions', page: 'dashboard', icon: 'download', cat: 'Action' },
+      { label: 'Rapport mensuel PDF', page: 'rapports', icon: 'file-earmark-pdf', cat: 'Rapport' },
+      { label: 'Ventes Q3 Excel', page: 'rapports', icon: 'file-earmark-excel', cat: 'Rapport' },
+      { label: 'Analytics annuel', page: 'rapports', icon: 'file-earmark-bar-graph', cat: 'Rapport' },
+      { label: 'Ajouter un utilisateur', page: 'utilisateurs', icon: 'person-plus', cat: 'Action' }
+    ];
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const q = e.target.value.trim().toLowerCase();
+        if (!q) { searchResults.classList.add('d-none'); return; }
+
+        const pageMatches = searchableItems.filter(i =>
+          i.label.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q)
+        );
+        const userMatches = USERS.filter(u =>
+          u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+        ).map(u => ({ label: `${u.name} — ${u.email}`, page: 'utilisateurs', icon: 'person-circle', cat: 'Utilisateur' }));
+
+        const all = [...pageMatches, ...userMatches];
+
+        if (all.length === 0) {
+          searchResults.innerHTML = `<div class="p-3 text-muted small">Aucun résultat pour "<strong>${q}</strong>"</div>`;
+        } else {
+          // Grouper par catégorie
+          const grouped = {};
+          all.forEach(item => {
+            if (!grouped[item.cat]) grouped[item.cat] = [];
+            grouped[item.cat].push(item);
+          });
+
+          let html = '';
+          Object.keys(grouped).forEach(cat => {
+            html += `<div class="px-3 pt-2 pb-1 small text-muted fw-bold">${cat}</div>`;
+            grouped[cat].forEach(item => {
+              html += `
+                <div class="list-group-item d-flex align-items-center gap-2 py-2"
+                     onclick="selectSearchResult('${item.page}')">
+                  <i class="bi bi-${item.icon} text-primary"></i>
+                  <span class="small">${item.label}</span>
+                </div>
+              `;
+            });
+          });
+          searchResults.innerHTML = html;
+        }
+        searchResults.classList.remove('d-none');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#globalSearch') && !e.target.closest('#searchResults')) {
+          searchResults.classList.add('d-none');
+        }
+      });
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const first = searchResults.querySelector('.list-group-item');
+          if (first) first.click();
+        }
+      });
+    }
+
+    function selectSearchResult(page) {
+      showPage(page);
+      searchResults.classList.add('d-none');
+      searchInput.value = '';
+      showToast({ type: 'info', title: 'Navigation', message: `Vous êtes sur : ${page}` });
+    }
+
+    // ============ NOTIFICATIONS ============
+    function pushNotification(title, message, pushToo = false) {
+      NOTIFICATIONS.unshift({ title, message, time: new Date().toLocaleTimeString('fr-FR') });
+      renderNotifications();
+
+      // Push navigateur
+      if (pushToo && 'Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body: message, icon: 'https://i.pravatar.cc/64?img=12' });
+      }
+    }
+
+    function renderNotifications() {
+      const list = document.getElementById('notifList');
+      const badge = document.getElementById('notifBadge');
+      const empty = document.getElementById('notifEmpty');
+      list.querySelectorAll('.notif-item').forEach(el => el.remove());
+
+      if (NOTIFICATIONS.length === 0) {
+        if (empty) empty.classList.remove('d-none');
+        badge.classList.add('d-none');
+        return;
+      }
+      if (empty) empty.classList.add('d-none');
+      badge.classList.remove('d-none');
+      badge.textContent = NOTIFICATIONS.length > 9 ? '9+' : NOTIFICATIONS.length;
+
+      NOTIFICATIONS.slice(0, 10).forEach(n => {
+        const li = document.createElement('li');
+        li.className = 'notif-item';
+        li.innerHTML = `
+          <a class="dropdown-item py-2" href="#" onclick="event.preventDefault();">
+            <div class="small fw-semibold">${n.title}</div>
+            <div class="text-muted small">${n.message}</div>
+            <div class="text-muted small"><i class="bi bi-clock"></i> ${n.time}</div>
+          </a>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function clearNotifications() {
+      NOTIFICATIONS = [];
+      renderNotifications();
+      showToast({ type: 'info', title: 'Notifications', message: 'Toutes les notifications ont été effacées' });
+    }
+
+    // ============ UTILISATEURS ============
+    function renderUsers() {
+      const tbody = document.getElementById('usersTable');
+      if (!tbody) return;
+
+      const roleColors = { 'Admin': 'primary', 'Éditeur': 'info', 'Lecteur': 'secondary' };
+      const statusColors = { 'Actif': 'success', 'Inactif': 'warning' };
+
+      tbody.innerHTML = USERS.map(u => `
+        <tr>
+          <td><img src="https://i.pravatar.cc/36?img=${u.avatar}" class="rounded-circle" width="36"></td>
+          <td><strong>${u.name}</strong></td>
+          <td>${u.email}</td>
+          <td><span class="badge bg-${roleColors[u.role] || 'secondary'}-subtle text-${roleColors[u.role] || 'secondary'}">${u.role}</span></td>
+          <td><span class="badge bg-${statusColors[u.status]}-subtle text-${statusColors[u.status]}">${u.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-secondary" onclick="editUser(${u.id})" title="Modifier">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${u.id})" title="Supprimer">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      // Stats
+      document.getElementById('usersCount').textContent = USERS.length;
+      document.getElementById('usersActive').textContent = USERS.filter(u => u.status === 'Actif').length;
+      document.getElementById('usersInactive').textContent = USERS.filter(u => u.status === 'Inactif').length;
+      document.getElementById('usersAdmins').textContent = USERS.filter(u => u.role === 'Admin').length;
+    }
+
+    function openUserModal() {
+      currentUserEditId = null;
+      document.getElementById('userModalTitle').textContent = 'Ajouter un utilisateur';
+      document.getElementById('userForm').reset();
+      document.getElementById('userId').value = '';
+    }
+
+    function editUser(id) {
+      const user = USERS.find(u => u.id === id);
+      if (!user) return;
+      currentUserEditId = id;
+      document.getElementById('userModalTitle').textContent = 'Modifier l\'utilisateur';
+      document.getElementById('userId').value = id;
+      document.getElementById('userName').value = user.name;
+      document.getElementById('userEmail').value = user.email;
+      document.getElementById('userRole').value = user.role;
+      document.getElementById('userStatus').value = user.status;
+      new bootstrap.Modal(document.getElementById('userModal')).show();
+    }
+
+    function saveUser(e) {
+      e.preventDefault();
+      const id = document.getElementById('userId').value;
+      const name = document.getElementById('userName').value.trim();
+      const email = document.getElementById('userEmail').value.trim();
+      const role = document.getElementById('userRole').value;
+      const status = document.getElementById('userStatus').value;
+
+      if (id) {
+        const idx = USERS.findIndex(u => u.id == id);
+        if (idx !== -1) {
+          USERS[idx] = { ...USERS[idx], name, email, role, status };
+          showToast({ type: 'success', title: 'Modifié', message: `${name} a été mis à jour` });
+        }
+      } else {
+        USERS.push({ id: Date.now(), name, email, role, status, avatar: Math.floor(Math.random() * 70) + 1 });
+        showToast({ type: 'success', title: 'Ajouté', message: `${name} a été ajouté` });
+        pushNotification('Nouvel utilisateur', `${name} (${role}) ajouté`);
+      }
+      bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+      renderUsers();
+    }
+
+    function deleteUser(id) {
+      const user = USERS.find(u => u.id === id);
+      if (!user) return;
+      if (!confirm(`Supprimer "${user.name}" ?`)) return;
+      USERS = USERS.filter(u => u.id !== id);
+      renderUsers();
+      showToast({ type: 'danger', title: 'Supprimé', message: `${user.name} a été supprimé` });
+    }
+
+    // ============ TÉLÉCHARGEMENTS ============
+    function downloadReport(name, format = 'txt') {
+      showToast({ type: 'info', title: 'Préparation...', message: `${name}` });
+      setTimeout(() => {
+        const content = `Rapport : ${name}\nGénéré le : ${new Date().toLocaleString('fr-FR')}\n\n` +
+          `STATISTIQUES\n- Vues : 124,531\n- Visiteurs uniques : 42,180\n- Commandes : 1,284\n- Revenus : 154,230 €\n\n` +
+          `APPAREILS\n- Mobile : 62%\n- Desktop : 31%\n- Tablette : 7%\n`;
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name.replace(/[^a-z0-9]/gi, '_') + '.' + format;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast({ type: 'success', title: 'Téléchargé', message: `${name}` });
+      }, 600);
+    }
+
+    function exportTransactions() {
+      const rows = document.querySelectorAll('#transactionsTable tr');
+      let csv = 'Client,Pays,Montant,Statut,Heure\n';
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 5) {
+          csv += Array.from(cells).map(c => `"${c.textContent.trim()}"`).join(',') + '\n';
+        }
+      });
+      downloadCSV(csv, 'transactions');
+    }
+
+    function exportOrders() {
+      const csv = `ID,Client,Date,Montant,Statut
+CMD-1042,Alice Martin,07/10/2025,124.50,Livrée
+CMD-1041,Karim Ben,07/10/2025,89.90,En attente
+CMD-1040,Yuki Tanaka,06/10/2025,312.00,Livrée
+CMD-1039,Lucas Silva,06/10/2025,45.00,Annulée
+CMD-1038,Sofia Rossi,05/10/2025,210.75,Livrée`;
+      downloadCSV(csv, 'commandes');
+    }
+
+    function downloadCSV(content, filename) {
+      const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${filename}_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast({ type: 'success', title: 'Export réussi', message: `${filename}.csv` });
+    }
+
+    // ============ PARAMÈTRES ============
+    function saveSettings(e) {
+      e.preventDefault();
+      const name = document.getElementById('setName').value;
+      const email = document.getElementById('setEmail').value;
+      const lang = document.getElementById('setLang').value;
+      const notif = document.getElementById('setNotif').checked;
+      const push = document.getElementById('setPush').checked;
+
+      localStorage.setItem('settings', JSON.stringify({ name, email, lang, notif, push }));
+
+      // Demander permission push si activé
+      if (push && 'Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+
+      showToast({ type: 'success', title: 'Enregistré', message: 'Vos paramètres ont été sauvegardés' });
+      pushNotification('Paramètres modifiés', 'Vos préférences ont été mises à jour');
+    }
+
+    function manageSubscription() {
+      showToast({ type: 'info', title: 'Abonnement', message: 'Redirection vers la facturation...' });
+    }
+
+    function cancelSubscription() {
+      if (confirm('Annuler votre abonnement Pro ?')) {
+        showToast({ type: 'warning', title: 'Annulation', message: 'Actif jusqu\'à la fin du mois' });
+      }
+    }
+
+    function upgradePro() {
+      showToast({ type: 'success', title: 'Upgrade', message: 'Redirection vers le paiement...' });
+      pushNotification('Upgrade Pro', 'Demande envoyée');
+    }
+
+    function logout() {
+      if (confirm('Se déconnecter ?')) {
+        showToast({ type: 'info', title: 'Déconnexion', message: 'À bientôt !' });
+      }
+    }
+
+    // ============ FILTRES PÉRIODE ============
+    document.querySelectorAll('#periodFilter button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#periodFilter button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const period = btn.dataset.period;
+        const multipliers = { '1h': 0.1, '24h': 1, '7j': 5.2, '30j': 22 };
+        const mult = multipliers[period] || 1;
+
+        // Appliquer aux KPI
+        const visitors = Math.floor(342 * mult);
+        const orders = Math.floor(128 * mult);
+        const revenue = 12450.75 * mult;
+
+        animateCounter(document.getElementById('kpiVisitors'), visitors);
+        animateCounter(document.getElementById('kpiOrders'), orders);
+        document.getElementById('kpiRevenue').textContent = fmtMoney.format(revenue);
+
+        showToast({ type: 'info', title: 'Filtre appliqué', message: `Période : ${period}` });
+      });
+    });
+
+    // ============ THÈME ============
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-bs-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const next = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-bs-theme', next);
+      localStorage.setItem('theme', next);
+      updateThemeIcon(next);
+      showToast({ type: 'info', title: 'Thème', message: `Mode ${next === 'dark' ? 'sombre' : 'clair'}` });
+    });
+
+    function updateThemeIcon(theme) {
+      themeBtn.innerHTML = theme === 'dark' ? '<i class="bi bi-sun"></i>' : '<i class="bi bi-moon-stars"></i>';
+    }
+
+    // ============ IMPRESSION PDF ============
+    document.getElementById('printBtn').addEventListener('click', () => {
+      showToast({ type: 'info', title: 'Impression', message: 'Ouverture de la fenêtre d\'impression...' });
+      setTimeout(() => window.print(), 300);
+    });
+
+    // ============ COMPTEUR ANIMÉ ============
+    const fmtInt = new Intl.NumberFormat('fr-FR');
+    const fmtMoney = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function animateCounter(el, target, duration = 800) {
+      if (!el) return;
+      const start = parseInt(el.textContent.replace(/\D/g, '')) || 0;
+      const startTime = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const value = Math.floor(start + (target - start) * progress);
+        el.textContent = fmtInt.format(value);
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // ============ MINI-CARTE MONDE ============
+    const cities = [
+      { name: 'Paris', x: 48, y: 30 },
+      { name: 'Londres', x: 46, y: 28 },
+      { name: 'New York', x: 25, y: 35 },
+      { name: 'Tokyo', x: 82, y: 38 },
+      { name: 'São Paulo', x: 32, y: 72 },
+      { name: 'Berlin', x: 50, y: 28 },
+      { name: 'Sydney', x: 88, y: 75 },
+      { name: 'Le Caire', x: 55, y: 45 }
+    ];
+
+    function renderWorldMap() {
+      const map = document.getElementById('worldMap');
+      if (!map) return;
+      map.innerHTML = '';
+      const activeCount = Math.floor(Math.random() * 5) + 4;
+      const activeCities = cities.slice(0, activeCount);
+
+      activeCities.forEach(c => {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.style.left = c.x + '%';
+        dot.style.top = c.y + '%';
+        dot.style.animationDelay = (Math.random() * 2) + 's';
+        dot.title = c.name;
+        map.appendChild(dot);
+      });
+
+      document.getElementById('worldActiveCities').textContent = activeCount;
+    }
+
+    // ============ APPAREILS DYNAMIQUES ============
+    function updateDevices() {
+      let mobile = Math.round(60 + Math.random() * 5);
+      let desktop = Math.round(28 + Math.random() * 5);
+      let tablet = 100 - mobile - desktop;
+      if (tablet < 3) { tablet = 3; desktop = 100 - mobile - tablet; }
+
+      document.getElementById('deviceMobilePct').textContent = mobile + '%';
+      document.getElementById('deviceMobileBar').style.width = mobile + '%';
+      document.getElementById('deviceDesktopPct').textContent = desktop + '%';
+      document.getElementById('deviceDesktopBar').style.width = desktop + '%';
+      document.getElementById('deviceTabletPct').textContent = tablet + '%';
+      document.getElementById('deviceTabletBar').style.width = tablet + '%';
+    }
+
+    // ============ TOP PAYS ============
+    function renderCountries(countries) {
+      const container = document.getElementById('countriesList');
+      if (!container) return;
+      const max = Math.max(...countries.map(c => c.value));
+      container.innerHTML = countries.slice(0, 6).map((c, i) => `
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1 small">
+            <span><strong>${i + 1}.</strong> ${c.name}</span>
+            <span class="text-muted">${c.value} visiteurs</span>
+          </div>
+          <div class="progress" style="height: 10px;">
+            <div class="country-bar" style="width: ${(c.value / max) * 100}%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ============ TRANSACTIONS ============
+    const clients = ['Alice Martin', 'Karim Ben', 'Yuki Tanaka', 'Lucas Silva', 'Sofia Rossi', 'Emma Dubois', 'Noah Petit', 'Liam Moreau'];
+    const pays = ['🇫🇷 France', '🇺🇸 USA', '🇯🇵 Japon', '🇧🇷 Brésil', '🇩🇪 Allemagne', '🇨🇦 Canada', '🇮🇳 Inde', '🇪🇸 Espagne'];
+    const statuts = [
+      { label: 'Payée', class: 'success' },
+      { label: 'En attente', class: 'warning' },
+      { label: 'Échouée', class: 'danger' }
+    ];
+
+    function randomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function addTransaction() {
+      const table = document.getElementById('transactionsTable');
+      if (!table) return;
+      const statut = randomItem(statuts);
+      const montant = (Math.random() * 500 + 20).toFixed(2);
+      const now = new Date().toLocaleTimeString('fr-FR');
+
+      const tr = document.createElement('tr');
+      tr.style.opacity = '0';
+      tr.innerHTML = `
+        <td><strong>${randomItem(clients)}</strong></td>
+        <td>${randomItem(pays)}</td>
+        <td class="fw-semibold">${fmtMoney.format(montant)} €</td>
+        <td><span class="badge bg-${statut.class}-subtle text-${statut.class}">${statut.label}</span></td>
+        <td class="text-muted small">${now}</td>
+      `;
+      table.prepend(tr);
+      requestAnimationFrame(() => {
+        tr.style.transition = 'opacity 0.4s';
+        tr.style.opacity = '1';
+      });
+      while (table.children.length > 8) table.removeChild(table.lastChild);
+    }
+
+    // ============ ÉVÉNEMENTS LIVE ============
+    const eventActions = ['a passé une commande', 'a créé un compte', 'a ajouté un produit au panier', 'a laissé un avis 5★', 's\'est abonné à la newsletter'];
+    const usersList = ['Alice', 'Karim', 'Yuki', 'Lucas', 'Sofia', 'Emma'];
+
+    function addEvent() {
+      const list = document.getElementById('eventsList');
+      if (!list) return;
+      const user = randomItem(usersList);
+      const action = randomItem(eventActions);
+      const country = randomItem(pays);
+
+      const li = document.createElement('li');
+      li.className = 'list-group-item d-flex align-items-start gap-3 py-3';
+      li.innerHTML = `
+        <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:38px;height:38px;">
+          <i class="bi bi-person"></i>
+        </div>
+        <div class="flex-grow-1">
+          <div class="small"><strong>${user}</strong> ${action}</div>
+          <small class="text-muted">${country} · ${new Date().toLocaleTimeString('fr-FR')}</small>
+        </div>
+      `;
+      list.prepend(li);
+      while (list.children.length > 15) list.removeChild(list.lastChild);
+
+      // Alerte si commande
+      if (action.includes('commande')) {
+        pushNotification('Nouvelle vente 🎉', `${user} (${country}) a commandé`, false);
+      }
+    }
+
+    // ============ SOCKET LISTENERS ============
+    if (window.socket) {
+      socket.on('init', (state) => {
+        animateCounter(document.getElementById('kpiVisitors'), state.visitors);
+        animateCounter(document.getElementById('kpiOrders'), state.orders);
+        document.getElementById('kpiRevenue').textContent = fmtMoney.format(state.revenue);
+        document.getElementById('kpiConversion').textContent = state.conversion;
+        renderCountries(state.countries);
+      });
+
+      socket.on('metrics', (data) => {
+        window.__currentVisitors = data.visitors;
+        animateCounter(document.getElementById('kpiVisitors'), data.visitors);
+        animateCounter(document.getElementById('kpiOrders'), data.orders);
+        document.getElementById('kpiRevenue').textContent = fmtMoney.format(data.revenue);
+        document.getElementById('kpiConversion').textContent = data.conversion;
+        document.getElementById('lastUpdate').textContent = new Date(data.timestamp).toLocaleTimeString('fr-FR');
+        document.getElementById('serverLatency').textContent = (10 + Math.random() * 40).toFixed(0) + ' ms';
+      });
+
+      socket.on('event', (event) => addEvent());
+      socket.on('countries', (countries) => renderCountries(countries));
+      socket.on('toast', (data) => showToast(data));
+    }
+
+    // ============ INIT ============
+    document.addEventListener('DOMContentLoaded', () => {
+      renderUsers();
+      renderWorldMap();
+      updateDevices();
+      for (let i = 0; i < 6; i++) addTransaction();
+
+      // Paramètres sauvegardés
+      const saved = localStorage.getItem('settings');
+      if (saved) {
+        try {
+          const s = JSON.parse(saved);
+          if (s.name) document.getElementById('setName').value = s.name;
+          if (s.email) document.getElementById('setEmail').value = s.email;
+          if (s.lang) document.getElementById('setLang').value = s.lang;
+          if (s.notif !== undefined) document.getElementById('setNotif').checked = s.notif;
+          if (s.push !== undefined) document.getElementById('setPush').checked = s.push;
+        } catch (e) {}
+      }
+
+      // Uptime simulé
+      let uptime = 0;
+      setInterval(() => {
+        uptime++;
+        const h = String(Math.floor(uptime / 3600)).padStart(2, '0');
+        const m = String(Math.floor((uptime % 3600) / 60)).padStart(2, '0');
+        document.getElementById('serverUptime').textContent = `${h}:${m}`;
+      }, 1000);
+    });
+
+    // Timers
+    setInterval(addTransaction, 4000);
+    setInterval(addEvent, 5000);
+    setInterval(renderWorldMap, 8000);
+    setInterval(updateDevices, 5000);
+
+    // Exposer globalement
+    window.showPage = showPage;
+    window.showToast = showToast;
+    window.pushNotification = pushNotification;
+    window.fmtMoney = fmtMoney;
+    window.animateCounter = animateCounter;
+
+    // Raccourcis clavier
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        if (searchInput) searchInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>

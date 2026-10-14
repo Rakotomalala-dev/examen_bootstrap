@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeRent • Location Matériel Haut de Gamme</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Montserrat:wght@300;400;500&amp;display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        :root {
+            --gold: #c4a77d;
+            --gold-light: #d4b88c;
+            --gold-glow: rgba(196, 167, 125, 0.3);
+            --black: #1a1a1a;
+            --gray: #e0e0e0;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, .display-4 { font-family: 'Playfair Display', serif; font-weight: 700; }
+        .luxury-gold { color: #c4a77d; }
+        .section-title { font-size: 2.8rem; letter-spacing: -1px; }
+        
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+        
+        .animate-scale { opacity: 0; animation: scaleIn 0.6s ease forwards; }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        
+        /* ===== NAVBAR ===== */
+        .navbar {
+            transition: all 0.4s ease;
+            background: transparent;
+            padding-top: 1.25rem;
+            padding-bottom: 1.25rem;
+        }
+        .navbar.scrolled {
+            background-color: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+        .nav-link {
+            color: #e0e0e0 !important;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active { color: #c4a77d !important; }
+        
+        .btn-gold {
+            background-color: #c4a77d;
+            color: #1a1a1a;
+            border: none;
+            font-weight: 500;
+            padding: 12px 32px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        .btn-gold:hover {
+            background-color: #d4b88c;
+            color: #1a1a1a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-gold {
+            color: #c4a77d;
+            border: 1.5px solid #c4a77d;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-gold:hover {
+            background-color: #c4a77d;
+            color: #1a1a1a;
+            border-color: #c4a77d;
+        }
+        
+        /* ===== HERO ===== */
+        .hero-pro {
+            background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('images.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+        }
+        .hero-pro::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 120px;
+            background: linear-gradient(to top, #1a1a1a, transparent);
+            pointer-events: none;
+        }
+        
+        .search-bar {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 12px;
+            padding: 1.5rem;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .search-bar .form-control,
+        .search-bar .form-select {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            height: 52px;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+        }
+        .search-bar .form-control:focus,
+        .search-bar .form-select:focus {
+            border-color: #c4a77d;
+        }
+        .btn-search {
+            background-color: #c4a77d;
+            color: #fff;
+            border: none;
+            padding: 0 2.5rem;
+            height: 52px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .btn-search:hover {
+            background-color: #b38b65;
+            color: #fff;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            font-size: 0.9rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        .step-item:nth-child(1) { animation-delay: 0.6s; }
+        .step-item:nth-child(2) { animation-delay: 0.8s; }
+        .step-item:nth-child(3) { animation-delay: 1.0s; }
+        .step-item i {
+            font-size: 1.35rem;
+            color: #c4a77d;
+            animation: float 3s ease-in-out infinite;
+        }
+        .step-item:nth-child(2) i { animation-delay: 0.5s; }
+        .step-item:nth-child(3) i { animation-delay: 1s; }
+        
+        /* ===== CARDS ===== */
+        .luxury-card {
+            background-color: #ffffff;
+            border: none;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease;
+            overflow: hidden;
+            border-radius: 8px;
+            color: #1a1a1a;
+        }
+        .luxury-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+        }
+        .luxury-card img { transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+        .luxury-card:hover img { transform: scale(1.1); }
+        .product-card img { height: 220px; object-fit: cover; }
+        
+        /* Category cards with gold shadow */
+        .category-card-gold {
+            position: relative;
+            background-color: #2a2a2a;
+            border: none;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #e0e0e0;
+        }
+        .category-card-gold .card-title,
+        .category-card-gold h5 { color: #ffffff !important; }
+        .category-card-gold .card-text,
+        .category-card-gold p { color: #b0b0b0 !important; }
+        .category-card-gold:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 0 30px rgba(196, 167, 125, 0.3),
+                        0 0 60px rgba(196, 167, 125, 0.15);
+        }
+        .category-card-gold img { transition: transform 0.7s ease; }
+        .category-card-gold:hover img { transform: scale(1.1); }
+        
+        /* ===== MODAL ===== */
+        .modal-content {
+            background-color: #2a2a2a;
+            border: 1px solid #c4a77d;
+            color: #e0e0e0;
+        }
+        .modal-content .text-muted { color: #b0b0b0 !important; }
+        .modal-content .modal-title,
+        .modal-content h5, .modal-content h6 { color: #ffffff; }
+        
+        /* ===== GALLERY ===== */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            filter: grayscale(40%) brightness(0.8);
+            transition: filter 0.6s ease, transform 0.7s ease;
+        }
+        .gallery-item:hover img { filter: grayscale(0%) brightness(1); transform: scale(1.1); }
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(26,26,26,0.9));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-overlay span {
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+            padding: 0 20px;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+        }
+        .gallery-item:hover .gallery-overlay span { transform: translateY(0); }
+        
+        #lightboxModal .modal-content { background-color: #000; border: none; }
+        #lightboxModal img { max-height: 85vh; object-fit: contain; }
+        
+        .nav-active { color: #c4a77d !important; }
+        
+        .contact-input {
+            background-color: #3a3a3a;
+            border: 1px solid #666;
+            color: #ffffff;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .contact-input::placeholder { color: #aaa; font-size: 0.9rem; }
+        .contact-input:focus {
+            border-color: #c4a77d;
+            box-shadow: 0 0 0 0.2rem rgba(196, 167, 125, 0.15);
+        }
+        
+        .contact-label {
+            color: #cccccc !important;
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .footer-link {
+            color: #999;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .footer-link:hover { color: #c4a77d; }
+        
+        .hero-title { opacity: 0; animation: fadeInUp 0.8s ease forwards; }
+        .hero-subtitle { opacity: 0; animation: fadeInUp 0.8s ease 0.3s forwards; }
+        
+        .gold-divider {
+            width: 60px;
+            height: 2px;
+            background: #c4a77d;
+            margin: 1rem auto;
+            border-radius: 1px;
+        }
+        
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: #c4a77d; }
+        
+        .section-dark { background: linear-gradient(135deg, #1a1a1a 0%, #111 100%); }
+        
+        .product-card {
+            border: 1px solid transparent;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .product-card:hover { border-color: rgba(196, 167, 125, 0.3); }
+        
+        [id^="page-"] { animation: fadeIn 0.5s ease; }
+        
+        /* ===== Newsletter Box ===== */
+        .newsletter-box {
+            background: linear-gradient(135deg, #1a1a1a, #222);
+            border: 1px solid rgba(196, 167, 125, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        .newsletter-box .form-control {
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+            height: 52px;
+        }
+        .newsletter-box .form-control:focus { border-color: #c4a77d; }
+        .newsletter-box .form-control::placeholder { color: #999; }
+        
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(196, 167, 125, 0.1);
+            transition: all 0.3s ease;
+            color: #c4a77d;
+            text-decoration: none;
+            font-size: 1.3rem;
+        }
+        .social-icon:hover {
+            background: #c4a77d;
+            color: #1a1a1a !important;
+            transform: translateY(-3px);
+        }
+        
+        .footer-email-display {
+            background: rgba(196, 167, 125, 0.08);
+            border: 1px solid rgba(196, 167, 125, 0.15);
+            border-radius: 8px;
+            padding: 0.8rem 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .footer-email-display i {
+            font-size: 1.3rem;
+            color: #c4a77d;
+        }
+        .footer-email-display span {
+            font-size: 0.95rem;
+            color: #c4a77d;
+            font-weight: 500;
+        }
+        
+        /* ===== BG LUXURY ===== */
+        .bg-luxury {
+            position: relative;
+            overflow: hidden;
+        }
+        .bg-luxury::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(196, 167, 125, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(196, 167, 125, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#" onclick="showPage('page-accueil')">
+                <span class="fs-2 fw-bold" style="font-family: 'Playfair Display', serif; color: #c4a77d;">LuxeRent</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link px-4 active" href="#" onclick="showPage('page-accueil')">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link px-4" href="#" onclick="showPage('page-catalogue')">Catalogue</a></li>
+                    <li class="nav-item"><a class="nav-link px-4" href="#" onclick="showPage('page-services')">Services</a></li>
+                    <li class="nav-item"><a class="nav-link px-4" href="#" onclick="showPage('page-contact')">Contact</a></li>
+                </ul>
+                <button class="btn btn-outline-light px-4" onclick="showPage('page-contact')"
+                        style="border-color:#c4a77d;color:#c4a77d;"
+                        onmouseover="this.style.backgroundColor='#c4a77d';this.style.color='#1a1a1a'"
+                        onmouseout="this.style.backgroundColor='transparent';this.style.color='#c4a77d'">
+                    Louer maintenant
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE ACCUEIL -->
+    <div id="page-accueil">
+        <header class="hero-pro text-white position-relative">
+            <div class="container position-relative" style="z-index:3;">
+                <div class="row justify-content-center text-center mb-4">
+                    <div class="col-lg-9">
+                        <h1 class="display-3 fw-bold mb-3 hero-title" style="letter-spacing:-1.5px;line-height:1.05;">
+                            Location de Matériel <br><span style="color:#c4a77d;">Haut de Gamme</span>
+                        </h1>
+                        <p class="lead fs-5 mb-0 hero-subtitle">Du matériel professionnel pour votre quotidien, disponible en un clic.</p>
+                        <div class="gold-divider"></div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-11">
+                        <div class="search-bar animate-scale" style="animation-delay:0.5s;">
+                            <form class="row g-3 align-items-center" onsubmit="performSearch(event)">
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" placeholder="Que cherchez-vous ? (mobilier, électro, outillage...)">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select">
+                                        <option>Paris &amp; Île-de-France</option>
+                                        <option>Lyon &amp; Rhône-Alpes</option>
+                                        <option>Marseille &amp; Provence</option>
+                                        <option>Bordeaux &amp; Nouvelle-Aquitaine</option>
+                                        <option>Lille &amp; Hauts-de-France</option>
+                                        <option>Livraison Nationale</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-search w-100"><i class="bi bi-search me-2"></i>Rechercher</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-lg-10">
+                        <div class="d-flex flex-wrap justify-content-center gap-5 pt-3">
+                            <div class="step-item"><i class="bi bi-search"></i><span>Trouvez votre matériel</span></div>
+                            <div class="step-item"><i class="bi bi-calendar-check"></i><span>Choisissez vos dates</span></div>
+                            <div class="step-item"><i class="bi bi-truck"></i><span>Livraison en 24h</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Produits populaires -->
+        <section class="py-5 bg-white">
+            <div class="container py-4">
+                <div class="text-center mb-5 reveal">
+                    <span class="luxury-gold text-uppercase small fw-medium">Top location</span>
+                    <h3 class="fw-medium text-dark mb-1" style="font-family:'Playfair Display',serif;font-size:2.1rem;">Nos articles les plus loués</h3>
+                    <div class="gold-divider" style="background:#c4a77d;"></div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6 reveal delay-1">
+                        <div class="luxury-card card h-100 border-0">
+                            <img src="images 12.jpg" class="card-img-top" alt="Luxury" style="height:200px;object-fit:cover;">
+                            <div class="card-body px-3 py-3">
+                                <h6 class="fw-medium text-dark mb-1">Luxury</h6>
+                                <p class="small text-muted mb-2">Mobilier design contemporain</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="luxury-gold fw-semibold">185€</span>
+                                    <span class="text-muted small">/ jour</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 reveal delay-2">
+                        <div class="luxury-card card h-100 border-0">
+                            <img src="images 10.jpg" class="card-img-top" alt="Sentinel" style="height:200px;object-fit:cover;">
+                            <div class="card-body px-3 py-3">
+                                <h6 class="fw-medium text-dark mb-1">Sentinel</h6>
+                                <p class="small text-muted mb-2">Système audio haut de gamme</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="luxury-gold fw-semibold">245€</span>
+                                    <span class="text-muted small">/ jour</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 reveal delay-3">
+                        <div class="luxury-card card h-100 border-0">
+                            <img src="images 9.jpg" class="card-img-top" alt="Plumery" style="height:200px;object-fit:cover;">
+                            <div class="card-body px-3 py-3">
+                                <h6 class="fw-medium text-dark mb-1">Plumery</h6>
+                                <p class="small text-muted mb-2">Projecteur luminaire design</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="luxury-gold fw-semibold">165€</span>
+                                    <span class="text-muted small">/ jour</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 reveal delay-4">
+                        <div class="luxury-card card h-100 border-0">
+                            <img src="images 8.jpg" class="card-img-top" alt="Verdanes" style="height:200px;object-fit:cover;">
+                            <div class="card-body px-3 py-3">
+                                <h6 class="fw-medium text-dark mb-1">Verdanes</h6>
+                                <p class="small text-muted mb-2">Équipement extérieur premium</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="luxury-gold fw-semibold">320€</span>
+                                    <span class="text-muted small">/ jour</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catégories avec effet ombre -->
+        <section class="py-5 section-dark bg-luxury">
+            <div class="container py-4 position-relative" style="z-index:1;">
+                <div class="text-center mb-5 reveal">
+                    <span class="luxury-gold text-uppercase small fw-medium">Notre catalogue</span>
+                    <h2 class="section-title mt-2" style="color:#fff;">Nos Catégories</h2>
+                    <div class="gold-divider"></div>
+                    <p class="text-muted">Une large gamme de matériel professionnel pour tous vos besoins</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4 reveal delay-1">
+                        <div class="category-card-gold card h-100">
+                            <img src="images 5.jpg" class="card-img-top" alt="Éclairage" style="height:260px;object-fit:cover;">
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-medium">Éclairage &amp; Luminaires</h5>
+                                <p class="card-text small">Lampes design, projecteurs LED, éclairage d'ambiance et luminaires haut de gamme.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 reveal delay-2">
+                        <div class="category-card-gold card h-100">
+                            <img src="images 7.jpg" class="card-img-top" alt="Audio" style="height:260px;object-fit:cover;">
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-medium">Audio &amp; Hi-Tech</h5>
+                                <p class="card-text small">Enceintes nomades, systèmes home cinéma, vidéoprojecteurs et accessoires connectés.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 reveal delay-3">
+                        <div class="category-card-gold card h-100">
+                            <img src="images 4.jpg" class="card-img-top" alt="Mobilier" style="height:260px;object-fit:cover;">
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-medium">Mobilier Design</h5>
+                                <p class="card-text small">Canapés, tables, chaises design et ameublement contemporain pour tous vos espaces.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Avantages -->
+        <section class="py-5 bg-white">
+            <div class="container py-4">
+                <div class="text-center mb-5 reveal">
+                    <span class="luxury-gold text-uppercase small fw-medium">Pourquoi nous choisir</span>
+                    <h2 class="section-title mt-2 text-dark">Louer chez LuxeRent</h2>
+                    <div class="gold-divider" style="background:#c4a77d;"></div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4 reveal delay-1">
+                        <div class="text-center p-4">
+                            <div class="display-5 luxury-gold mb-3 animate-float"><i class="bi bi-truck"></i></div>
+                            <h5 class="fw-medium text-dark">Livraison Express</h5>
+                            <p class="text-muted small">Livraison et installation sous 24h partout en France.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 reveal delay-2">
+                        <div class="text-center p-4">
+                            <div class="display-5 luxury-gold mb-3 animate-float" style="animation-delay:0.5s;"><i class="bi bi-shield-check"></i></div>
+                            <h5 class="fw-medium text-dark">Matériel Vérifié</h5>
+                            <p class="text-muted small">Chaque article est inspecté et désinfecté avant chaque location.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 reveal delay-3">
+                        <div class="text-center p-4">
+                            <div class="display-5 luxury-gold mb-3 animate-float" style="animation-delay:1s;"><i class="bi bi-headset"></i></div>
+                            <h5 class="fw-medium text-dark">Support 24/7</h5>
+                            <p class="text-muted small">Notre équipe disponible 7j/7 pour vous accompagner.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galerie -->
+        <section class="py-5" style="background-color:#161616;">
+            <div class="container py-4">
+                <div class="text-center mb-5 reveal">
+                    <span class="luxury-gold text-uppercase small fw-medium">Inspirations</span>
+                    <h2 class="section-title mt-2">Nos Réalisations</h2>
+                    <div class="gold-divider"></div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6 reveal delay-1">
+                        <div class="gallery-item" onclick="openLightbox('image 11.png','Aménagement Salon Luxe')">
+                            <img src="image 11.png" alt="Salon">
+                            <div class="gallery-overlay"><span>Aménagement Salon Luxe</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 reveal delay-2">
+                        <div class="gallery-item" onclick="openLightbox('salon-design-Maisons-du-monde.jpg','Décoration Intérieure')">
+                            <img src="salon-design-Maisons-du-monde.jpg" alt="Décoration">
+                            <div class="gallery-overlay"><span>Décoration Intérieure</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 reveal delay-3">
+                        <div class="gallery-item" onclick="openLightbox('salon-coiffure.jpg','Espace Professionnel')">
+                            <img src="salon-coiffure.jpg" alt="Espace Pro">
+                            <div class="gallery-overlay"><span>Espace Professionnel</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 reveal delay-1">
+                        <div class="gallery-item" onclick="openLightbox('petite-table-salon.jpg','Table Design')">
+                            <img src="petite-table-salon.jpg" alt="Table">
+                            <div class="gallery-overlay"><span>Table Design Contemporaine</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 reveal delay-2">
+                        <div class="gallery-item" onclick="openLightbox('images 6.jpg','Éclairage d\'Ambiance')">
+                            <img src="images 6.jpg" alt="Éclairage">
+                            <div class="gallery-overlay"><span>Éclairage d'Ambiance</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 reveal delay-3">
+                        <div class="gallery-item" onclick="openLightbox('images 5.jpg','Événement Premium')">
+                            <img src="images 5.jpg" alt="Événement">
+                            <div class="gallery-overlay"><span>Événement Premium</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PAGE CATALOGUE -->
+    <div id="page-catalogue" style="display:none;">
+        <div class="container py-5" style="padding-top:120px !important;">
+            <div class="text-center mb-5 pt-4 reveal">
+                <span class="luxury-gold text-uppercase small">Notre gamme</span>
+                <h2 class="section-title mt-2">Catalogue Complet</h2>
+                <div class="gold-divider"></div>
+                <p class="text-muted">Du matériel sélectionné pour tous vos besoins</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 reveal delay-1">
+                    <div class="luxury-card card product-card h-100">
+                        <img src="images 10.jpg" class="card-img-top" alt="Projecteur" style="height:220px;object-fit:cover;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Projecteur LED Pro</h5>
+                                <span class="luxury-gold fw-medium">245€</span>
+                            </div>
+                            <p class="small text-muted mb-3">Projecteur LED 300W avec télécommande et 16 modes.</p>
+                            <button class="btn btn-outline-gold btn-sm" onclick="showProductModal(this)">Voir détails</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal delay-2">
+                    <div class="luxury-card card product-card h-100">
+                        <img src="images 12.jpg" class="card-img-top" alt="Enceinte" style="height:220px;object-fit:cover;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Enceinte Nomade Premium</h5>
+                                <span class="luxury-gold fw-medium">185€</span>
+                            </div>
+                            <p class="small text-muted mb-3">Enceinte Bluetooth haut de gamme, 60W, autonomie 20h.</p>
+                            <button class="btn btn-outline-gold btn-sm" onclick="showProductModal(this)">Voir détails</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal delay-3">
+                    <div class="luxury-card card product-card h-100">
+                        <img src="images 9.jpg" class="card-img-top" alt="Lampe" style="height:220px;object-fit:cover;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Lampe Design Plumery</h5>
+                                <span class="luxury-gold fw-medium">165€</span>
+                            </div>
+                            <p class="small text-muted mb-3">Lampe sur pied design avec variateur d'intensité.</p>
+                            <button class="btn btn-outline-gold btn-sm" onclick="showProductModal(this)">Voir détails</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal delay-1">
+                    <div class="luxury-card card product-card h-100">
+                        <img src="images 2.jpg" class="card-img-top" alt="Table" style="height:220px;object-fit:cover;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Table à Dîner Design</h5>
+                                <span class="luxury-gold fw-medium">95€</span>
+                            </div>
+                            <p class="small text-muted mb-3">Table design 6-8 places, piétement métal doré.</p>
+                            <button class="btn btn-outline-gold btn-sm" onclick="showProductModal(this)">Voir détails</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal delay-2">
+                    <div class="luxury-card card product-card h-100">
+                        <img src="images 8.jpg" class="card-img-top" alt="Barbecue" style="height:220px;object-fit:cover;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Barbecue Verdanes</h5>
+                                <span class="luxury-gold fw-medium">320€</span>
+                            </div>
+                            <p class="small text-muted mb-3">Barbecue premium 6 brûleurs, plancha inox.</p>
+                            <button class="btn btn-outline-gold btn-sm" onclick="showProductModal(this)">Voir détails</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal delay-3">
+                    <div class="luxury-card card product-card h-100">
+                        <img src="images 3.jpg" class="card-img-top" alt="Home Cinema" style="height:220px;object-fit:cover;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Kit Home Cinéma</h5>
+                                <span class="luxury-gold fw-medium">420€</span>
+                            </div>
+                            <p class="small text-muted mb-3">Vidéoprojecteur 4K + écran 120" + son 5.1.</p>
+                            <button class="btn btn-outline-gold btn-sm" onclick="showProductModal(this)">Voir détails</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE SERVICES -->
+    <div id="page-services" style="display:none;">
+        <div class="container py-5" style="padding-top:140px !important;">
+            <div class="row align-items-center">
+                <div class="col-lg-6 pe-lg-5 reveal animate-slide-left">
+                    <span class="luxury-gold small text-uppercase">À propos</span>
+                    <h2 class="section-title mb-4">LuxeRent : Votre partenaire location</h2>
+                    <div class="gold-divider" style="margin:1rem 0;"></div>
+                    <p class="lead">LuxeRent vous propose une sélection de matériel haut de gamme pour votre quotidien et vos événements.</p>
+                    <p>Nous livrons, installons et récupérons le matériel chez vous. Sans contrainte.</p>
+                    <div class="d-flex gap-4 mt-4">
+                        <div><div class="stat-number">2500+</div><div class="small text-muted">Articles dispo</div></div>
+                        <div><div class="stat-number">99%</div><div class="small text-muted">Satisfaits</div></div>
+                        <div><div class="stat-number">24h</div><div class="small text-muted">Livraison</div></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-5 mt-lg-0 reveal animate-slide-right">
+                    <div class="category-card-gold card">
+                        <img src="luxe.jpg" class="card-img-top" alt="LuxeRent" style="height:400px;object-fit:cover;">
+                        <div class="card-body p-4">
+                            <h5 class="card-title">Notre Engagement</h5>
+                            <p class="card-text small">Matériel premium, livraison soignée, service client dédié.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="py-5 section-dark bg-luxury">
+            <div class="container py-4">
+                <div class="text-center mb-5 reveal">
+                    <h2 class="section-title mt-2" style="color:#fff;">Nos Services</h2>
+                    <div class="gold-divider"></div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4 reveal delay-1">
+                        <div class="category-card-gold card h-100 text-center p-4">
+                            <div class="display-4 luxury-gold mb-3"><i class="bi bi-truck"></i></div>
+                            <h5>Livraison &amp; Installation</h5>
+                            <p class="small">Livraison, installation et test du matériel chez vous.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 reveal delay-2">
+                        <div class="category-card-gold card h-100 text-center p-4">
+                            <div class="display-4 luxury-gold mb-3"><i class="bi bi-arrow-repeat"></i></div>
+                            <h5>Location Flexible</h5>
+                            <p class="small">À la journée, à la semaine ou au mois selon vos besoins.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 reveal delay-3">
+                        <div class="category-card-gold card h-100 text-center p-4">
+                            <div class="display-4 luxury-gold mb-3"><i class="bi bi-star"></i></div>
+                            <h5>Essai Avant Achat</h5>
+                            <p class="small">Louez d'abord pour tester avant d'investir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PAGE CONTACT -->
+    <div id="page-contact" style="display:none;">
+        <div class="container py-5" style="padding-top:130px !important;">
+            <div class="row g-5">
+                <div class="col-lg-5 reveal animate-slide-left">
+                    <h2 class="section-title mb-4">Contactez-nous</h2>
+                    <div class="gold-divider" style="margin:1rem 0;"></div>
+                    <p>Une question ? Notre équipe est là pour vous.</p>
+                    <div class="mt-4">
+                        <div class="mb-4 d-flex align-items-center gap-3">
+                            <div class="display-6 luxury-gold"><i class="bi bi-geo-alt"></i></div>
+                            <div>
+                                <div class="fw-medium mb-1">Adresse</div>
+                                <div class="text-muted">18 Rue de la Paix<br>75002 Paris, France</div>
+                            </div>
+                        </div>
+                        <div class="mb-4 d-flex align-items-center gap-3">
+                            <div class="display-6 luxury-gold"><i class="bi bi-telephone"></i></div>
+                            <div>
+                                <div class="fw-medium mb-1">Téléphone</div>
+                                <div class="luxury-gold fs-5">+33 1 42 86 17 90</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="display-6 luxury-gold"><i class="bi bi-envelope"></i></div>
+                            <div>
+                                <div class="fw-medium mb-1">Email</div>
+                                <div class="luxury-gold fs-5">contact@luxerent.fr</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h6 class="fw-medium mb-3">Suivez-nous</h6>
+                        <div class="d-flex gap-3">
+                            <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="social-icon"><i class="bi bi-tiktok"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 reveal animate-slide-right">
+                    <form id="contactForm" onsubmit="submitContactForm(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="contact-label mb-1">Nom complet</label>
+                                <input type="text" class="form-control contact-input py-3" placeholder="Ex: Jean Dupont" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="contact-label mb-1">Email</label>
+                                <input type="email" class="form-control contact-input py-3" placeholder="exemple@email.com" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="contact-label mb-1">Objet</label>
+                                <select class="form-control contact-input py-3">
+                                    <option>Location de matériel</option>
+                                    <option>Demande de devis</option>
+                                    <option>Information produit</option>
+                                    <option>Autre</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="contact-label mb-1">Message</label>
+                                <textarea class="form-control contact-input py-3" rows="5" placeholder="Décrivez votre besoin en détail..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-gold px-5 py-3 w-100"><i class="bi bi-send me-2"></i>Envoyer la demande</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer style="background-color:#0a0a0a;padding-top:4rem;padding-bottom:2rem;">
+        <div class="container">
+            <!-- Newsletter -->
+            <div class="newsletter-box mb-5 reveal">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="display-5 luxury-gold"><i class="bi bi-envelope-paper"></i></div>
+                            <div>
+                                <h4 class="text-white mb-1">Restez informé</h4>
+                                <p class="text-muted small mb-0">Recevez nos offres exclusives et nouveaux arrivages</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mt-3 mt-lg-0">
+                        <form id="newsletterForm" onsubmit="subscribeNewsletter(event)">
+                            <div class="input-group">
+                                <input type="email" class="form-control py-3" placeholder="votre.email@exemple.com" required>
+                                <button class="btn btn-gold px-4" type="submit"><i class="bi bi-send-fill me-2"></i>S'abonner</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <span class="fw-bold fs-4" style="font-family:'Playfair Display',serif;color:#c4a77d;">LuxeRent</span>
+                    <div class="mt-3">
+                        <p class="text-muted small mb-2">Location Matériel Haut de Gamme</p>
+                        <p class="small text-muted" style="line-height:1.7;">Location de mobilier design, éclairage, audio et équipements premium pour votre quotidien.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-medium mb-3 text-white">Navigation</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" onclick="showPage('page-accueil')" class="footer-link">Accueil</a></li>
+                        <li class="mb-2"><a href="#" onclick="showPage('page-catalogue')" class="footer-link">Catalogue</a></li>
+                        <li class="mb-2"><a href="#" onclick="showPage('page-services')" class="footer-link">Services</a></li>
+                        <li class="mb-2"><a href="#" onclick="showPage('page-contact')" class="footer-link">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-medium mb-3 text-white">Contact</h6>
+                    <div class="mb-2">
+                        <i class="bi bi-geo-alt me-2 luxury-gold"></i>
+                        <span class="small text-muted">18 Rue de la Paix, 75002 Paris</span>
+                    </div>
+                    <div class="mb-2">
+                        <i class="bi bi-telephone me-2 luxury-gold"></i>
+                        <span class="small text-muted">+33 1 42 86 17 90</span>
+                    </div>
+                    <div class="footer-email-display">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span>contact@luxerent.fr</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-medium mb-3 text-white">Horaires</h6>
+                    <div class="small text-muted mb-2">
+                        <span class="d-block">Lun - Ven : 9h - 19h</span>
+                        <span class="d-block">Sam : 10h - 18h</span>
+                        <span class="d-block">Dim : Fermé</span>
+                    </div>
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top border-secondary mt-4 pt-4 text-center">
+                <span class="small text-muted">© 2025 LuxeRent — Tous droits réservés</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LIGHTBOX -->
+    <div class="modal fade" id="lightboxModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content bg-black border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-white" id="lightboxTitle"></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0 text-center">
+                    <img id="lightboxImage" class="img-fluid" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PRODUIT -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold" id="modalProductTitle"></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-6">
+                            <img id="modalProductImage" class="img-fluid w-100" style="height:100%;object-fit:cover;max-height:420px;" alt="">
+                        </div>
+                        <div class="col-md-6 p-4">
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-uppercase small text-muted">Prix journalier</span>
+                                    <span class="fs-3 luxury-gold fw-bold" id="modalProductPrice"></span>
+                                </div>
+                                <h6 class="mb-3">Caractéristiques</h6>
+                                <ul class="list-unstyled small text-muted" id="modalSpecifications"></ul>
+                            </div>
+                            <button class="btn btn-gold w-100 py-3" onclick="requestQuote()">Demander un devis</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+            const target = document.getElementById(pageId);
+            if(target) {
+                target.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('active', 'nav-active');
+                if(l.getAttribute('onclick')?.includes(pageId)) l.classList.add('active', 'nav-active');
+            });
+            if(pageId === 'page-accueil') document.querySelector('.nav-link[onclick*="page-accueil"]')?.classList.add('active', 'nav-active');
+        }
+
+        function initNavbarScroll() {
+            const navbar = document.getElementById('mainNavbar');
+            window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 60));
+        }
+
+        function showProductModal(element) {
+            const card = element.closest('.luxury-card');
+            document.getElementById('modalProductTitle').innerText = card.querySelector('.card-title').innerText;
+            document.getElementById('modalProductPrice').innerText = card.querySelector('.luxury-gold').innerText;
+            document.getElementById('modalProductImage').src = card.querySelector('img').src;
+            const specs = ['Technologie de pointe','Commande à distance','Alimentation secteur','Poids : 12,5 kg','Garantie incluse'];
+            const list = document.getElementById('modalSpecifications');
+            list.innerHTML = specs.map(s => `<li>• ${s}</li>`).join('');
+            new bootstrap.Modal(document.getElementById('productModal')).show();
+        }
+
+        function requestQuote() {
+            bootstrap.Modal.getInstance(document.getElementById('productModal'))?.hide();
+            setTimeout(() => showPage('page-contact'), 400);
+        }
+
+        function submitContactForm(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const orig = btn.innerHTML;
+            btn.innerHTML = 'Envoi...'; btn.disabled = true;
+            setTimeout(() => {
+                btn.innerHTML = 'Message envoyé !';
+                btn.style.backgroundColor = '#4a7043';
+                setTimeout(() => {
+                    e.target.reset();
+                    btn.innerHTML = orig;
+                    btn.style.backgroundColor = '';
+                    btn.disabled = false;
+                    alert("Merci ! Nous vous contacterons sous 24h.");
+                }, 1500);
+            }, 1400);
+        }
+
+        function openLightbox(src, title) {
+            document.getElementById('lightboxImage').src = src;
+            document.getElementById('lightboxTitle').innerText = title;
+            new bootstrap.Modal(document.getElementById('lightboxModal')).show();
+        }
+
+        function performSearch(e) {
+            e.preventDefault();
+            showPage('page-catalogue');
+        }
+
+        function subscribeNewsletter(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const orig = btn.innerHTML;
+            btn.innerHTML = 'Inscription...'; btn.disabled = true;
+            setTimeout(() => {
+                btn.innerHTML = 'Merci !';
+                btn.style.backgroundColor = '#4a7043';
+                setTimeout(() => {
+                    e.target.reset();
+                    btn.innerHTML = orig;
+                    btn.style.backgroundColor = '';
+                    btn.disabled = false;
+                    alert("Merci pour votre inscription !");
+                }, 1400);
+            }, 1100);
+        }
+
+        function init() {
+            initNavbarScroll();
+            initScrollReveal();
+            document.querySelector('.nav-link[onclick*="page-accueil"]')?.classList.add('active', 'nav-active');
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.addEventListener('click', () => {
+                    const c = document.getElementById('navbarNav');
+                    if(c?.classList.contains('show')) new bootstrap.Collapse(c).hide();
+                });
+            });
+            document.getElementById('page-accueil').style.display = 'block';
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

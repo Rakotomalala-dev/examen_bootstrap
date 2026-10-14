@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Café Latanà — Galerie</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="assets/style.css" rel="stylesheet">
+  <style>
+    .galerie-item img {
+      cursor: pointer;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .galerie-item img:hover {
+      transform: scale(1.04);
+      filter: brightness(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Couche de bulles fixe : effet verre, visible sur toute la page, même en scrollant -->
+  <div class="bg-bubbles-fixed">
+    <div class="bubble" style="width:260px; height:260px; top:6%; left:4%; --c:rgba(200,155,60,.45); animation-duration:22s;">
+      <span class="mini-bubble" style="width:6px; height:6px; left:42%; bottom:7%; animation-duration:9.5s; animation-delay:-4.3s;"></span>
+      <span class="mini-bubble" style="width:11px; height:11px; left:36%; bottom:6%; animation-duration:9.4s; animation-delay:-8.4s;"></span>
+      <span class="mini-bubble" style="width:11px; height:11px; left:65%; bottom:38%; animation-duration:11.3s; animation-delay:-0.0s;"></span>
+    </div>
+    <div class="bubble" style="width:180px; height:180px; top:70%; left:12%; --c:rgba(124,152,133,.45); animation-duration:26s; animation-delay:-6s;">
+      <span class="mini-bubble" style="width:6px; height:6px; left:20%; bottom:23%; animation-duration:11.8s; animation-delay:-8.7s;"></span>
+      <span class="mini-bubble" style="width:9px; height:9px; left:42%; bottom:38%; animation-duration:7.5s; animation-delay:-0.3s;"></span>
+      <span class="mini-bubble" style="width:7px; height:7px; left:65%; bottom:40%; animation-duration:8.8s; animation-delay:-6.4s;"></span>
+    </div>
+    <div class="bubble" style="width:220px; height:220px; top:22%; left:85%; --c:rgba(89,133,105,.4); animation-duration:24s; animation-delay:-11s;">
+      <span class="mini-bubble" style="width:7px; height:7px; left:57%; bottom:38%; animation-duration:9.3s; animation-delay:-5.4s;"></span>
+      <span class="mini-bubble" style="width:5px; height:5px; left:70%; bottom:16%; animation-duration:9.9s; animation-delay:-1.9s;"></span>
+      <span class="mini-bubble" style="width:12px; height:12px; left:79%; bottom:35%; animation-duration:9.3s; animation-delay:-5.9s;"></span>
+    </div>
+    <div class="bubble" style="width:150px; height:150px; top:82%; left:70%; --c:rgba(200,155,60,.4); animation-duration:19s; animation-delay:-3s;">
+      <span class="mini-bubble" style="width:9px; height:9px; left:23%; bottom:25%; animation-duration:9.4s; animation-delay:-0.8s;"></span>
+      <span class="mini-bubble" style="width:5px; height:5px; left:61%; bottom:35%; animation-duration:12.4s; animation-delay:-9.9s;"></span>
+      <span class="mini-bubble" style="width:5px; height:5px; left:38%; bottom:33%; animation-duration:9.8s; animation-delay:-2.7s;"></span>
+    </div>
+    <div class="bubble" style="width:300px; height:300px; top:45%; left:45%; --c:rgba(124,152,133,.35); animation-duration:30s; animation-delay:-15s;">
+      <span class="mini-bubble" style="width:10px; height:10px; left:77%; bottom:1%; animation-duration:11.9s; animation-delay:-9.2s;"></span>
+      <span class="mini-bubble" style="width:8px; height:8px; left:16%; bottom:10%; animation-duration:6.8s; animation-delay:-3.2s;"></span>
+      <span class="mini-bubble" style="width:8px; height:8px; left:58%; bottom:34%; animation-duration:6.7s; animation-delay:-1.7s;"></span>
+      <span class="mini-bubble" style="width:8px; height:8px; left:62%; bottom:17%; animation-duration:7.3s; animation-delay:-6.3s;"></span>
+    </div>
+    <div class="bubble" style="width:170px; height:170px; top:8%; left:55%; --c:rgba(89,133,105,.4); animation-duration:21s; animation-delay:-8s;">
+      <span class="mini-bubble" style="width:12px; height:12px; left:43%; bottom:2%; animation-duration:6.0s; animation-delay:-4.0s;"></span>
+      <span class="mini-bubble" style="width:12px; height:12px; left:57%; bottom:20%; animation-duration:11.4s; animation-delay:-3.1s;"></span>
+      <span class="mini-bubble" style="width:8px; height:8px; left:62%; bottom:34%; animation-duration:9.8s; animation-delay:-0.9s;"></span>
+    </div>
+    <div class="bubble" style="width:200px; height:200px; top:55%; left:90%; --c:rgba(200,155,60,.4); animation-duration:27s; animation-delay:-13s;">
+      <span class="mini-bubble" style="width:7px; height:7px; left:60%; bottom:3%; animation-duration:6.5s; animation-delay:-3.5s;"></span>
+      <span class="mini-bubble" style="width:10px; height:10px; left:84%; bottom:3%; animation-duration:12.4s; animation-delay:-2.7s;"></span>
+      <span class="mini-bubble" style="width:6px; height:6px; left:65%; bottom:26%; animation-duration:6.5s; animation-delay:-0.6s;"></span>
+      <span class="mini-bubble" style="width:11px; height:11px; left:17%; bottom:36%; animation-duration:6.9s; animation-delay:-1.5s;"></span>
+    </div>
+  </div>
+
+  <!-- ============ NAVBAR ============ -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-forest sticky-top py-3">
+    <div class="container">
+      <a class="navbar-brand fs-4" href="index.html">Café Latanà</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="menuPrincipal">
+        <ul class="navbar-nav gap-lg-4">
+          <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+          <li class="nav-item"><a class="nav-link" href="menu.html">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="galerie.html">Galerie</a></li>
+          <li class="nav-item"><a class="nav-link" href="apropos.html">À propos</a></li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ EN-TÊTE ============ -->
+  <header class="bg-forest py-5 text-white text-center position-relative overflow-hidden">
+    <div class="bubbles-wrap">
+      <span class="bubble" style="width:190px; height:190px; top:12%; left:8%; background:rgba(200,155,60,.35); animation-duration:25s;"></span>
+      <span class="bubble" style="width:250px; height:250px; top:45%; left:75%; background:rgba(89,133,105,.35); animation-duration:29s; animation-delay:-9s;"></span>
+      <span class="bubble" style="width:130px; height:130px; top:65%; left:25%; background:rgba(250,246,238,.22); animation-duration:21s; animation-delay:-5s;"></span>
+    </div>
+    <div class="container content-above">
+      <h1 class="hero-animate fw-bold">Galerie</h1>
+      <p class="hero-animate-delay" style="color:#E7E2D6;">Clique sur une photo pour l'agrandir.</p>
+    </div>
+  </header>
+
+  <!-- ============ GRILLE D'IMAGES + MODAL Bootstrap ============ -->
+  <section class="py-5">
+    <div class="container py-4">
+      <div class="row row-cols-2 row-cols-md-3 g-3">
+
+        <div class="col galerie-item reveal">
+          <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=500&q=80"
+               class="img-fluid rounded-3 shadow-sm w-100" alt="Grains de café"
+               data-bs-toggle="modal" data-bs-target="#modalImage"
+               data-img="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1200&q=80"
+               data-legende="Nos grains fraîchement torréfiés">
+        </div>
+
+        <div class="col galerie-item reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?w=500&q=80"
+               class="img-fluid rounded-3 shadow-sm w-100" alt="Intérieur du café"
+               data-bs-toggle="modal" data-bs-target="#modalImage"
+               data-img="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?w=1200&q=80"
+               data-legende="Notre salon de dégustation à Analakely">
+        </div>
+
+        <div class="col galerie-item reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=500&q=80"
+               class="img-fluid rounded-3 shadow-sm w-100" alt="Café Ambositra"
+               data-bs-toggle="modal" data-bs-target="#modalImage"
+               data-img="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1200&q=80"
+               data-legende="Le café d'Ambositra, notre édition du mois">
+        </div>
+
+        <div class="col galerie-item reveal">
+          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&q=80"
+               class="img-fluid rounded-3 shadow-sm w-100" alt="Tasse de café"
+               data-bs-toggle="modal" data-bs-target="#modalImage"
+               data-img="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80"
+               data-legende="Un expresso servi avec soin">
+        </div>
+
+        <div class="col galerie-item reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1495465798138-718f86d1a4bd?w=500&q=80"
+               class="img-fluid rounded-3 shadow-sm w-100" alt="Latte art"
+               data-bs-toggle="modal" data-bs-target="#modalImage"
+               data-img="https://images.unsplash.com/photo-1495465798138-718f86d1a4bd?w=1200&q=80"
+               data-legende="Latte art réalisé par notre équipe">
+        </div>
+
+        <div class="col galerie-item reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=500&q=80"
+               class="img-fluid rounded-3 shadow-sm w-100" alt="Sac de grains"
+               data-bs-toggle="modal" data-bs-target="#modalImage"
+               data-img="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1200&q=80"
+               data-legende="Nos sachets prêts à être vendus">
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODAL — composant Bootstrap "modal" (animation fade intégrée) ============ -->
+  <div class="modal fade" id="modalImage" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content bg-forest text-white border-0">
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="modalLegende">Photo</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="modalImageSrc" src="" class="img-fluid rounded-3" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-forest text-cream py-4">
+    <div class="container">
+      <div class="row align-items-center g-3">
+        <div class="col-md-6 text-white">
+          <span class="brand-font fs-5">Café Latanà</span>
+          <p class="mb-0" style="color:#C9C2AE;">© 2026 — Tous droits réservés.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="index.html" class="me-3">Accueil</a>
+          <a href="menu.html" class="me-3">Menu</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/script.js"></script>
+  <script>
+    // Remplit dynamiquement la modale avec l'image cliquée
+    // (on récupère les infos stockées dans les attributs data-img / data-legende)
+    document.getElementById('modalImage').addEventListener('show.bs.modal', function (event) {
+      const trigger = event.relatedTarget;
+      document.getElementById('modalImageSrc').src = trigger.getAttribute('data-img');
+      document.getElementById('modalLegende').textContent = trigger.getAttribute('data-legende');
+    });
+  </script>
+</body>
+</html>

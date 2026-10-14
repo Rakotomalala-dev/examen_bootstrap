@@ -1,0 +1,249 @@
+/* ============================================================
+   VARIABLES DE COULEURS — identité visuelle du site
+   ============================================================ */
+:root {
+  --lt-forest: #1F3B2C;
+  --lt-gold:   #C89B3C;
+  --lt-cream:  #FAF6EE;
+  --lt-sage:   #7C9885;
+  --lt-ink:    #2B2118;
+}
+
+body {
+  background-color: var(--lt-cream);
+  color: var(--lt-ink);
+  font-family: 'Work Sans', sans-serif;
+}
+
+h1, h2, h3, .brand-font {
+  font-family: 'Fraunces', serif;
+}
+
+.navbar-brand {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+}
+
+.bg-forest { background-color: var(--lt-forest); }
+.bg-sage-light { background-color: #EDEFE7; }
+.text-gold { color: var(--lt-gold); }
+
+.btn-gold {
+  background-color: var(--lt-gold);
+  border-color: var(--lt-gold);
+  color: var(--lt-ink);
+  font-weight: 600;
+}
+.btn-gold:hover { background-color: #b5892f; border-color: #b5892f; color: #fff; }
+
+.btn-outline-cream { border-color: var(--lt-cream); color: var(--lt-cream); }
+.btn-outline-cream:hover { background-color: var(--lt-cream); color: var(--lt-forest); }
+
+footer a { color: var(--lt-cream); text-decoration: none; }
+footer a:hover { color: var(--lt-gold); }
+
+/* ============================================================
+   NAVBAR — lien actif souligné avec une petite animation
+   ============================================================ */
+.navbar-nav .nav-link {
+  position: relative;
+  padding-bottom: 2px;
+}
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -2px;
+  width: 0%;
+  height: 2px;
+  background-color: var(--lt-gold);
+  transition: width 0.3s ease; /* <-- transition CSS pure, s'anime au survol */
+}
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+  width: 100%;
+}
+
+/* ============================================================
+   CARDS — légère élévation au survol
+   ============================================================ */
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 1rem 2rem rgba(31, 59, 44, 0.15) !important;
+}
+
+/* ============================================================
+   ANIMATION AU SCROLL ("reveal")
+   Bootstrap ne fournit PAS ce type d'animation nativement.
+   On combine : classe CSS (ici) + petit script JS (script.js)
+   qui détecte quand l'élément entre dans l'écran.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Décalage pour faire apparaître les cards d'une même ligne les unes après les autres */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ============================================================
+   HERO — petite animation d'entrée au chargement de la page
+   (indépendante du scroll, se joue une seule fois au chargement)
+   ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-animate {
+  animation: fadeInUp 0.8s ease both;
+}
+.hero-animate-delay {
+  animation: fadeInUp 0.8s ease both;
+  animation-delay: 0.2s;
+}
+
+/* Respecte les utilisateurs qui désactivent les animations dans leur système */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .hero-animate, .hero-animate-delay {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .bubble, .mini-bubble { animation: none !important; }
+}
+
+/* ============================================================
+   ARRIÈRE-PLAN ANIMÉ "BULLES" (blobs flous en mouvement lent)
+   ============================================================
+   Structure attendue en HTML :
+
+   <header class="bg-forest position-relative overflow-hidden">
+     <div class="bubbles-wrap">
+       <span class="bubble" style="width:180px; height:180px; top:10%; left:8%;
+             background:rgba(200,155,60,.35); animation-duration:24s;"></span>
+       ... (répéter avec des tailles/positions/couleurs différentes)
+     </div>
+     <div class="container content-above">
+       ... contenu normal ...
+     </div>
+   </header>
+
+   - .bubbles-wrap se place derrière le contenu (z-index: 0)
+   - .content-above place le vrai contenu au-dessus (z-index: 1)
+   - chaque bulle a sa propre taille/couleur/vitesse définies en inline
+     directement dans le HTML pour rester simple à ajuster
+   ============================================================ */
+/* ============================================================
+   ARRIÈRE-PLAN ANIMÉ "BULLES DE VERRE"
+   ============================================================
+   Inspiré d'une image de référence : de grandes sphères de verre
+   translucides (reflet en haut à gauche, bord clair, fond qui
+   reste visible à travers), avec de petites bulles qui montent
+   lentement à l'intérieur.
+
+   Structure HTML attendue pour UNE bulle :
+
+   <div class="bubble" style="width:220px; height:220px; top:10%; left:8%;
+        --c:rgba(200,155,60,.35); animation-duration:26s;">
+     <span class="mini-bubble" style="width:10px; height:10px; left:30%; bottom:10%; animation-duration:9s;"></span>
+     <span class="mini-bubble" style="width:6px;  height:6px;  left:60%; bottom:30%; animation-duration:7s; animation-delay:-3s;"></span>
+     ... (3-5 petites bulles par grande bulle)
+   </div>
+
+   - .bubble : la grande sphère (dérive lentement + tourne un peu)
+   - .mini-bubble : les petites bulles à l'intérieur, qui remontent
+     en boucle (comme des bulles de champagne), chacune à sa
+     propre vitesse via --duration en inline
+   - "--c" (inline) fixe la teinte de la sphère ; le fond de la
+     page reste visible à travers grâce à la transparence du
+     dégradé et à un flou très léger (contrairement à l'ancienne
+     version très floutée)
+   ============================================================ */
+.bubbles-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content-above {
+  position: relative;
+  z-index: 1;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  /* Dégradé "verre" : reflet clair en haut à gauche, teinte au centre, transparent sur les bords */
+  background: radial-gradient(circle at 30% 26%,
+                rgba(255,255,255,.65) 0%,
+                rgba(255,255,255,.12) 20%,
+                var(--c, rgba(200,155,60,.3)) 55%,
+                transparent 78%);
+  border: 1px solid rgba(255,255,255,.4);
+  box-shadow: inset 0 0 18px rgba(255,255,255,.2), 0 6px 18px rgba(0,0,0,.06);
+  filter: blur(1.5px); /* léger flou seulement, pour garder le fond bien visible */
+  overflow: hidden;
+  animation-name: bubbleFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes bubbleFloat {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  33%  { transform: translate(5%, -8%) rotate(4deg) scale(1.06); }
+  66%  { transform: translate(-4%, 5%) rotate(-3deg) scale(0.95); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+/* Petites bulles à l'intérieur d'une grande bulle : remontent en boucle, lentement */
+.mini-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.95), rgba(255,255,255,.25) 55%, transparent 80%);
+  animation-name: miniRise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes miniRise {
+  0%   { transform: translateY(0) scale(0.8); opacity: 0; }
+  12%  { opacity: .85; }
+  85%  { opacity: .5; }
+  100% { transform: translateY(-115%) scale(1); opacity: 0; }
+}
+
+/* ============================================================
+   COUCHE DE BULLES "FIXE" — visible sur TOUTE la page
+   ============================================================
+   Contrairement à .bubbles-wrap (qui est confiné à l'intérieur
+   d'un header), .bg-bubbles-fixed est positionnée en "fixed" :
+   elle reste collée à l'écran même quand on scrolle, et couvre
+   tout le viewport (haut en bas, écran vert OU crème).
+
+   Astuce technique : elle doit être le TOUT PREMIER élément
+   à l'intérieur de <body>, sans z-index précisé. Comme elle
+   n'a pas de z-index, elle se comporte comme un élément normal
+   dans l'ordre d'empilement : tout ce qui vient après elle dans
+   le HTML (navbar, header, sections...) s'affiche par-dessus
+   automatiquement. Les sections qui ont un fond plein (comme
+   .bg-forest) la cachent ; les sections SANS fond (donc avec
+   le crème du body qui transparaît) la laissent bien visible.
+   ============================================================ */
+.bg-bubbles-fixed {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}

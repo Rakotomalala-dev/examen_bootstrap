@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos — MANGAKA</title>
+    <!-- POLICES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- LUCIDE ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- NAVIGATION -->
+<nav class="nav">
+    <div class="wrap nav-container">
+        <div class="logo"
+             onclick="showPage('home')">
+            MANGA<span>KA</span>
+        </div>
+        <div class="nav-links"
+             id="navLinks">
+            <button class="nav-link"
+                    data-page="home"
+                    onclick="showPage('home')">
+                <i data-lucide="house"></i>
+                Accueil
+            </button>
+            <button class="nav-link"
+                    data-page="blog"
+                    onclick="showPage('blog')">
+                <i data-lucide="newspaper"></i>
+                Blog
+            </button>
+            <button class="nav-link active"
+                    data-page="about"
+                    onclick="showPage('about')">
+                <i data-lucide="circle-user-round"></i>
+                À propos
+            </button>
+            <button class="nav-link"
+                    data-page="contact"
+                    onclick="showPage('contact')">
+                <i data-lucide="mail"></i>
+                Contact
+            </button>
+        </div>
+        <button class="roulette-nav"
+                onclick="showPage('roulette')">
+            <i data-lucide="dices"></i>
+            Manga Roulette
+        </button>
+        <button class="menu-button"
+                onclick="toggleMenu()">
+            <i data-lucide="menu"></i>
+        </button>
+    </div>
+</nav>
+<!-- CONTENU -->
+<main class="page active"
+      id="about">
+    <section class="page-hero">
+        <div class="wrap page-hero-content">
+            <span class="eyebrow">
+                <i data-lucide="circle-user-round"></i>
+                QUI SOMMES-NOUS ?
+            </span>
+            <h1>
+                À <span>PROPOS.</span>
+            </h1>
+        </div>
+    </section>
+    <section>
+        <div class="wrap about-grid">
+            <div class="about-image">
+                <img
+                    src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1000&q=80"
+                    alt="MANGAKA">
+            </div>
+            <div class="about-text">
+                <span class="eyebrow">
+                    <i data-lucide="sparkles"></i>
+                    BIENVENUE DANS L'UNIVERS
+                </span>
+                <h2>
+                    PLUS QU'UNE
+                    COLLECTION.
+                    <br>
+                    <span class="hero-red">
+                        UNE PASSION.
+                    </span>
+                </h2>
+                <p>
+                    MANGAKA est un espace imaginé pour
+                    tous ceux qui aiment se perdre dans une histoire,
+                    découvrir un nouvel univers ou partager leur passion.
+                </p>
+                <p>
+                    Ici, il ne s'agit pas seulement de classer
+                    des mangas ou de donner des notes.
+                    L'idée est de créer une expérience :
+                    explorer, découvrir et parfois laisser
+                    complètement le hasard décider.
+                </p>
+                <div class="hero-buttons">
+                    <button class="button button-primary"
+                            onclick="showPage('roulette')">
+                        Essayer la Manga Roulette
+                        <i data-lucide="dices"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="featured-section">
+        <div class="wrap">
+            <span class="eyebrow">
+                <i data-lucide="heart"></i>
+                NOS VALEURS
+            </span>
+            <h2 class="section-title">
+                UN SITE POUR
+                <br>
+                <span>EXPLORER.</span>
+            </h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i data-lucide="flame"></i>
+                    </div>
+                    <h3>Passion</h3>
+                    <p>
+                        Mettre en avant les univers
+                        et les histoires qui nous font
+                        réellement ressentir quelque chose.
+                    </p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i data-lucide="compass"></i>
+                    </div>
+                    <h3>Découverte</h3>
+                    <p>
+                        Explorer de nouveaux univers
+                        et sortir de ses habitudes.
+                    </p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <h3>Communauté</h3>
+                    <p>
+                        Partager ses découvertes
+                        avec des personnes qui aiment
+                        les mêmes univers.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- FOOTER -->
+<footer>
+    <div class="wrap">
+        <div class="footer-grid">
+            <div>
+                <div class="logo">
+                    MANGA<span>KA</span>
+                </div>
+                <p class="footer-text">
+                    Un univers visuel dédié aux mangas,
+                    aux animés et à toutes les histoires
+                    qui nous font voyager ailleurs.
+                </p>
+            </div>
+            <div>
+                <span class="eyebrow">
+                    <i data-lucide="navigation"></i>
+                    NAVIGATION
+                </span>
+                <div class="footer-links">
+                    <button onclick="showPage('home')">
+                        <i data-lucide="house"></i>
+                        Accueil
+                    </button>
+                    <button onclick="showPage('blog')">
+                        <i data-lucide="newspaper"></i>
+                        Blog
+                    </button>
+                    <button onclick="showPage('about')">
+                        <i data-lucide="circle-user-round"></i>
+                        À propos
+                    </button>
+                    <button onclick="showPage('contact')">
+                        <i data-lucide="mail"></i>
+                        Contact
+                    </button>
+                </div>
+            </div>
+            <div>
+                <span class="eyebrow">
+                    <i data-lucide="compass"></i>
+                    EXPLORE
+                </span>
+                <div class="footer-links">
+                    <button onclick="showPage('roulette')">
+                        <i data-lucide="dices"></i>
+                        Manga Roulette
+                    </button>
+                    <button onclick="showPage('blog')">
+                        <i data-lucide="bookmark"></i>
+                        Derniers articles
+                    </button>
+                    <button onclick="showPage('about')">
+                        <i data-lucide="sparkles"></i>
+                        Notre univers
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>
+                © 2026 MANGAKA — Manga & Anime Universe.
+            </span>
+            <span>
+                Designed for manga lovers.
+            </span>
+        </div>
+    </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>

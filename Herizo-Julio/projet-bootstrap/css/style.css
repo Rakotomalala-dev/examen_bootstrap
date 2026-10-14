@@ -1,0 +1,16 @@
+:root {
+  --bs-body-bg: #f6f7f4;
+  --bs-body-color: #16222b;
+  --bs-body-font-family: "Segoe UI", system-ui, sans-serif;
+  --accent: #e8a200;
+  --ink: #16222b;
+}
+h1, h2, h3, .navbar-brand { font-family: Georgia, "Times New Roman", serif; }
+.navbar { background: var(--bs-body-bg); }
+.nav-link.active { font-weight: 600; border-bottom: 2px solid var(--accent); }
+.hero { background: #e9efe9; }
+.btn-accent { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+.btn-accent:hover { background: #cf9000; border-color: #cf9000; color: var(--ink); }
+.code-card { background: var(--ink); color: #f6f7f4; padding: 1.5rem; border-radius: .5rem; }
+.card { border-color: #d5dbd3; background: #fff; }
+a:focus-visible, .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }

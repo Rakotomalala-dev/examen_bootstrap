@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — MANGAKA</title>
+    <!-- POLICES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- LUCIDE ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- NAVIGATION -->
+<nav class="nav">
+    <div class="wrap nav-container">
+        <div class="logo"
+             onclick="showPage('home')">
+            MANGA<span>KA</span>
+        </div>
+        <div class="nav-links"
+             id="navLinks">
+            <button class="nav-link"
+                    data-page="home"
+                    onclick="showPage('home')">
+                <i data-lucide="house"></i>
+                Accueil
+            </button>
+            <button class="nav-link"
+                    data-page="blog"
+                    onclick="showPage('blog')">
+                <i data-lucide="newspaper"></i>
+                Blog
+            </button>
+            <button class="nav-link"
+                    data-page="about"
+                    onclick="showPage('about')">
+                <i data-lucide="circle-user-round"></i>
+                À propos
+            </button>
+            <button class="nav-link active"
+                    data-page="contact"
+                    onclick="showPage('contact')">
+                <i data-lucide="mail"></i>
+                Contact
+            </button>
+        </div>
+        <button class="roulette-nav"
+                onclick="showPage('roulette')">
+            <i data-lucide="dices"></i>
+            Manga Roulette
+        </button>
+        <button class="menu-button"
+                onclick="toggleMenu()">
+            <i data-lucide="menu"></i>
+        </button>
+    </div>
+</nav>
+<!-- CONTENU -->
+<main class="page active"
+      id="contact">
+    <section class="page-hero">
+        <div class="wrap page-hero-content">
+            <span class="eyebrow">
+                <i data-lucide="message-circle"></i>
+                UNE QUESTION ?
+            </span>
+            <h1>
+                ON <span>PARLE.</span>
+            </h1>
+        </div>
+    </section>
+    <section>
+        <div class="wrap contact-grid">
+            <div class="contact-info">
+                <span class="eyebrow">
+                    <i data-lucide="mail"></i>
+                    CONTACT MANGAKA
+                </span>
+                <h2>
+                    DIS-NOUS
+                    <span class="hero-red">
+                        TOUT.
+                    </span>
+                </h2>
+                <p>
+                    Une question, une idée, une suggestion
+                    ou simplement envie de partager ton manga préféré ?
+                    Envoie-nous un message.
+                </p>
+                <div class="contact-item">
+                    <div class="contact-item-icon">
+                        <i data-lucide="mail"></i>
+                    </div>
+                    <div>
+                        <span>EMAIL</span>
+                        <strong>
+                            hello@mangaka.com
+                        </strong>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-item-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <div>
+                        <span>COMMUNAUTÉ</span>
+                        <strong>
+                            Manga · Anime · Culture
+                        </strong>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-item-icon">
+                        <i data-lucide="share-2"></i>
+                    </div>
+                    <div>
+                        <span>RÉSEAUX</span>
+                        <strong>
+                            Instagram · TikTok · Discord
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            <form class="contact-form"
+                  id="contactForm">
+                <div class="form-row">
+                    <div class="field">
+                        <label>Andhy Emilie</label>
+                        <input
+                            type="text"
+                            placeholder="Emilie"
+                            required>
+                    </div>
+                    <div class="field">
+                        <label>llie@gmail.com</label>
+                        <input
+                            type="email"
+                            placeholder="llie@gmail.com"
+                            required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Sujet</label>
+                    <input
+                        type="text"
+                        placeholder="De quoi veux-tu parler ?"
+                        required>
+                </div>
+                <div class="field">
+                    <label>Ton message</label>
+                    <textarea
+                        placeholder="Écris ton message ici..."
+                        required></textarea>
+                </div>
+                <button class="button button-primary"
+                        type="submit">
+                    Envoyer le message
+                    <i data-lucide="send"></i>
+                </button>
+                <div class="contact-message"
+                     id="contactMessage">
+                    <i data-lucide="circle-check"></i>
+                    Message envoyé avec succès !
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+<!-- FOOTER -->
+<footer>
+    <div class="wrap">
+        <div class="footer-grid">
+            <div>
+                <div class="logo">
+                    MANGA<span>KA</span>
+                </div>
+                <p class="footer-text">
+                    Un univers visuel dédié aux mangas,
+                    aux animés et à toutes les histoires
+                    qui nous font voyager ailleurs.
+                </p>
+            </div>
+            <div>
+                <span class="eyebrow">
+                    <i data-lucide="navigation"></i>
+                    NAVIGATION
+                </span>
+                <div class="footer-links">
+                    <button onclick="showPage('home')">
+                        <i data-lucide="house"></i>
+                        Accueil
+                    </button>
+                    <button onclick="showPage('blog')">
+                        <i data-lucide="newspaper"></i>
+                        Blog
+                    </button>
+                    <button onclick="showPage('about')">
+                        <i data-lucide="circle-user-round"></i>
+                        À propos
+                    </button>
+                    <button onclick="showPage('contact')">
+                        <i data-lucide="mail"></i>
+                        Contact
+                    </button>
+                </div>
+            </div>
+            <div>
+                <span class="eyebrow">
+                    <i data-lucide="compass"></i>
+                    EXPLORE
+                </span>
+                <div class="footer-links">
+                    <button onclick="showPage('roulette')">
+                        <i data-lucide="dices"></i>
+                        Manga Roulette
+                    </button>
+                    <button onclick="showPage('blog')">
+                        <i data-lucide="bookmark"></i>
+                        Derniers articles
+                    </button>
+                    <button onclick="showPage('about')">
+                        <i data-lucide="sparkles"></i>
+                        Notre univers
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>
+                © 2026 MANGAKA — Manga & Anime Universe.
+            </span>
+            <span>
+                Designed for manga lovers.
+            </span>
+        </div>
+    </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>

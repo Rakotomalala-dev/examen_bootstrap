@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANGAKA — Manga Universe</title>
+    <!-- POLICES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- LUCIDE ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- NAVIGATION -->
+<nav class="nav">
+    <div class="wrap nav-container">
+        <div class="logo"
+             onclick="showPage('home')">
+            MANGA<span>KA</span>
+        </div>
+        <div class="nav-links"
+             id="navLinks">
+            <button class="nav-link active"
+                    data-page="home"
+                    onclick="showPage('home')">
+                <i data-lucide="house"></i>
+                Accueil
+            </button>
+            <button class="nav-link"
+                    data-page="blog"
+                    onclick="showPage('blog')">
+                <i data-lucide="newspaper"></i>
+                Blog
+            </button>
+            <button class="nav-link"
+                    data-page="about"
+                    onclick="showPage('about')">
+                <i data-lucide="circle-user-round"></i>
+                À propos
+            </button>
+            <button class="nav-link"
+                    data-page="contact"
+                    onclick="showPage('contact')">
+                <i data-lucide="mail"></i>
+                Contact
+            </button>
+        </div>
+        <button class="roulette-nav"
+                onclick="showPage('roulette')">
+            <i data-lucide="dices"></i>
+            Manga Roulette
+        </button>
+        <button class="menu-button"
+                onclick="toggleMenu()">
+            <i data-lucide="menu"></i>
+        </button>
+    </div>
+</nav>
+<!-- CONTENU -->
+<main class="page active"
+      id="home">
+    <header class="home-hero">
+        <div class="home-background"></div>
+        <div class="wrap home-content">
+            <div class="hero-badge">
+                <span class="live-dot"></span>
+                MANGA UNIVERSE · 2026
+            </div>
+            <h1>
+                PLUS QU'UN SITE.
+                <br>
+                <span class="hero-red">
+                    UN UNIVERS.
+                </span>
+            </h1>
+            <p class="hero-description">
+                Explore des histoires incroyables,
+                découvre de nouveaux univers et partage
+                ta passion avec une communauté qui vit
+                au rythme des mangas et des animés.
+            </p>
+            <div class="hero-buttons">
+                <button class="button button-primary"
+                        onclick="showPage('blog')">
+                    Explorer le blog
+                    <i data-lucide="arrow-right"></i>
+                </button>
+                <button class="button button-outline"
+                        onclick="showPage('roulette')">
+                    <i data-lucide="dices"></i>
+                    Laisser le hasard choisir
+                </button>
+            </div>
+        </div>
+    </header>
+    <!-- À LA UNE -->
+    <section class="featured-section">
+        <div class="wrap reveal">
+            <span class="eyebrow">
+                <i data-lucide="flame"></i>
+                01 / COUP DE CŒUR
+            </span>
+            <div class="featured-grid">
+                <div class="featured-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&w=900&q=80"
+                        alt="Manga à la une">
+                    <div class="featured-rank">
+                        TOP 01
+                    </div>
+                </div>
+                <div class="featured-info">
+                    <span class="eyebrow">
+                        <i data-lucide="sparkles"></i>
+                        L'ŒUVRE DU MOMENT
+                    </span>
+                    <h3>
+                        PLONGE DANS
+                        <br>
+                        <span class="hero-red">
+                            L'INCONNU.
+                        </span>
+                    </h3>
+                    <p>
+                        Chaque semaine, MANGAKA met en avant
+                        un univers qui mérite d'être découvert.
+                        Une histoire, une ambiance et une expérience
+                        qui pourraient devenir ta prochaine obsession.
+                    </p>
+                    <div class="rating">
+                        <span class="rating-number">
+                            9.4
+                        </span>
+                        <div>
+                            <div class="stars">
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                            </div>
+                            <small>
+                                NOTE DE LA COMMUNAUTÉ
+                            </small>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <button class="button button-primary"
+                                onclick="showPage('blog')">
+                            Découvrir
+                            <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- TENDANCES -->
+    <section>
+        <div class="wrap reveal">
+            <span class="eyebrow">
+                <i data-lucide="trending-up"></i>
+                02 / TENDANCES
+            </span>
+            <h2 class="section-title">
+                CE QUI FAIT
+                <br>
+                <span>VIBRER.</span>
+            </h2>
+            <p class="section-description">
+                Les univers, personnages et histoires
+                qui attirent actuellement toute l'attention.
+            </p>
+            <div class="manga-grid">
+                <article class="manga-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=700&q=80"
+                        alt="Crimson Shadow">
+                    <div class="manga-content">
+                        <span class="manga-meta">
+                            #01 · ACTION
+                        </span>
+                        <h3>Crimson Shadow</h3>
+                        <p>
+                            Une aventure sombre et explosive.
+                        </p>
+                    </div>
+                </article>
+                <article class="manga-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&w=700&q=80"
+                        alt="Midnight Files">
+                    <div class="manga-content">
+                        <span class="manga-meta">
+                            #02 · MYSTÈRE
+                        </span>
+                        <h3>Midnight Files</h3>
+                        <p>
+                            Un mystère qui commence à minuit.
+                        </p>
+                    </div>
+                </article>
+                <article class="manga-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=700&q=80"
+                        alt="Lost Worlds">
+                    <div class="manga-content">
+                        <span class="manga-meta">
+                            #03 · FANTASY
+                        </span>
+                        <h3>Lost Worlds</h3>
+                        <p>
+                            Une porte vers un monde oublié.
+                        </p>
+                    </div>
+                </article>
+                <article class="manga-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=700&q=80"
+                        alt="Silent Hearts">
+                    <div class="manga-content">
+                        <span class="manga-meta">
+                            #04 · DRAME
+                        </span>
+                        <h3>Silent Hearts</h3>
+                        <p>
+                            Des souvenirs impossibles à oublier.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+    <!-- STATISTIQUES -->
+    <section>
+        <div class="wrap stats-grid reveal">
+            <div class="stat">
+                <div class="stat-icon">
+                    <i data-lucide="book-open"></i>
+                </div>
+                <span class="stat-number"
+                      data-target="1240">
+                    0
+                </span>
+                <span class="stat-label">
+                    TITRES RÉFÉRENCÉS
+                </span>
+            </div>
+            <div class="stat">
+                <div class="stat-icon">
+                    <i data-lucide="orbit"></i>
+                </div>
+                <span class="stat-number"
+                      data-target="24">
+                    0
+                </span>
+                <span class="stat-label">
+                    UNIVERS
+                </span>
+            </div>
+            <div class="stat">
+                <div class="stat-icon">
+                    <i data-lucide="users"></i>
+                </div>
+                <span class="stat-number"
+                      data-target="86000">
+                    0
+                </span>
+                <span class="stat-label">
+                    LECTEURS
+                </span>
+            </div>
+            <div class="stat">
+                <div class="stat-icon">
+                    <i data-lucide="messages-square"></i>
+                </div>
+                <span class="stat-number"
+                      data-target="3800">
+                    0
+                </span>
+                <span class="stat-label">
+                    DISCUSSIONS
+                </span>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- FOOTER -->
+<footer>
+    <div class="wrap">
+        <div class="footer-grid">
+            <div>
+                <div class="logo">
+                    MANGA<span>KA</span>
+                </div>
+                <p class="footer-text">
+                    Un univers visuel dédié aux mangas,
+                    aux animés et à toutes les histoires
+                    qui nous font voyager ailleurs.
+                </p>
+            </div>
+            <div>
+                <span class="eyebrow">
+                    <i data-lucide="navigation"></i>
+                    NAVIGATION
+                </span>
+                <div class="footer-links">
+                    <button onclick="showPage('home')">
+                        <i data-lucide="house"></i>
+                        Accueil
+                    </button>
+                    <button onclick="showPage('blog')">
+                        <i data-lucide="newspaper"></i>
+                        Blog
+                    </button>
+                    <button onclick="showPage('about')">
+                        <i data-lucide="circle-user-round"></i>
+                        À propos
+                    </button>
+                    <button onclick="showPage('contact')">
+                        <i data-lucide="mail"></i>
+                        Contact
+                    </button>
+                </div>
+            </div>
+            <div>
+                <span class="eyebrow">
+                    <i data-lucide="compass"></i>
+                    EXPLORE
+                </span>
+                <div class="footer-links">
+                    <button onclick="showPage('roulette')">
+                        <i data-lucide="dices"></i>
+                        Manga Roulette
+                    </button>
+                    <button onclick="showPage('blog')">
+                        <i data-lucide="bookmark"></i>
+                        Derniers articles
+                    </button>
+                    <button onclick="showPage('about')">
+                        <i data-lucide="sparkles"></i>
+                        Notre univers
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>
+                © 2026 MANGAKA — Manga & Anime Universe.
+            </span>
+            <span>
+                Designed for manga lovers.
+            </span>
+        </div>
+    </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
